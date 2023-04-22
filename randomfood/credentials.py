@@ -1,2 +1,0 @@
-bot_token = "5736528142:AAEFBtsWq37N4ADtrsTTssAOG8BOn4PK4PU"
-key_gpt = "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"
