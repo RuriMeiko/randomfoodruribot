@@ -4,7 +4,7 @@ import io
 import base64
 import uuid
 import json
-#tao mới đổi
+#bm bị ngu
 from PIL import Image, PngImagePlugin
 
 
