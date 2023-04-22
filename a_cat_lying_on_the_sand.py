@@ -6,7 +6,7 @@ import uuid
 import json
 #tao mới đổi
 from PIL import Image, PngImagePlugin
-# cho Long tai game 100GB ddc del tai dc cai Github destop 300MG chan del muon noi
+
 
 url = None
 
@@ -182,6 +182,7 @@ def get_all_upscaler():
         if all_upscalers[i]['name'] != "LDSR":
             listtemp.append(all_upscalers[i]['name'])
     return listtemp
+
 
 def escape(s:str) -> str:
     list = '_', '*', '[', ']', '(', ')', '~', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!','`'
