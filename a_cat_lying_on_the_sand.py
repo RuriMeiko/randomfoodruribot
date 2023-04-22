@@ -4,7 +4,7 @@ import io
 import base64
 import uuid
 import json
-
+#tao mới đổi
 from PIL import Image, PngImagePlugin
 # cho Long tai game 100GB ddc del tai dc cai Github destop 300MG chan del muon noi
 
