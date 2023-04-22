@@ -7,7 +7,6 @@ import json
 
 from PIL import Image, PngImagePlugin
 
-
 url = None
 
 def reloadlink():
