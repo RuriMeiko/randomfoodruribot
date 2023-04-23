@@ -510,23 +510,16 @@ def handle_message(update, context):
     # Get basic info of the incoming message
     message_type = update.message.chat.type
     text = str(update.message.text).lower()
-    if text[:1] == "/":
-        if text[:26] != "/replika@randomfoodruribot":
-            if text[:8] != "/replika":
-                return
+    if (text[:1] == "/") and ((text[:26] != "/replika@randomfoodruribot") or (text[:8] != "/replika")):
+        return
     # Print a log for debugging
     if (text == "/replika") or (text == "/replika@randomfoodruribot"):
         update.message.reply_text(
             "Nhắn `/replika + nội dung tin nhắn` \nHiện hỗ trợ ngôn ngữ chính là tiếng anh, ngôn ngữ phụ là tiếng việt được dịch bằng google dịch\.", parse_mode="MarkdownV2")
         return
-    # React to group messages only if users mention the bot directly
     # Replace with your bot username
-    if "/replika" in text:
-        text = text.replace('/replika', '').strip()
-    if '@randomfoodruribot' in text:
-        text = text.replace('@randomfoodruribot', '').strip()
-    if '/replika@randomfoodruribot' in text:
-        text = text.replace('/replika@randomfoodruribot', '').strip()
+    text.replace('/replika', '').replace('@randomfoodruribot',
+                                         '').replace('/replika@randomfoodruribot', '').strip()
     print(
         f'User ({update.message.chat.username}) says: "{text}" in: {message_type}')
     ##########################
