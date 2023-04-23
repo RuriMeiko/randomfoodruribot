@@ -1,3 +1,4 @@
+import re
 import uuid
 from websocket import create_connection
 import leasson_allert
@@ -438,12 +439,11 @@ def get_message_replika():
                     if check_lang_is_ENG == False:
                         print("Return EN_to_VI:", ts.translate(
                             str(i['payload']['content']['text'])))
-                        a1 = ts.translate(str(i['payload']['content']['text'])).replace("Bạn", "Cậu").replace(
-                            "bạn", "cậu").replace("BẠN", "CẬU").replace(
-                                "Tôi", "Tớ").replace("tôi",
-                                                     "tớ").replace("TÔI", "TỚ").replace("em yêu anh", "tớ yêu cậu").replace("anh yêu em", "tớ yêu cậu").replace("Anh", "Tớ")
-                        if a1 == "Em yêu anh":
-                            a1 = "Tớ yêu cậu"
+                        a1 = ts.translate(str(i['payload']['content']['text']))
+                        # Thay thế tất cả các từ "Tôi" thành "Tớ"
+                        a1 = re.sub(r"(?i)\bTôi\b", "Tớ", a1)
+                        # Thay thế tất cả các từ "Bạn" thành "Cậu"
+                        a1 = re.sub(r"(?i)\bBạn\b", "Cậu", a1)
                         context_bot.bot.send_message(
                             text=str(a1), chat_id=Update_id)
                     else:
