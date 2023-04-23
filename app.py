@@ -1,8 +1,8 @@
 import uuid
 from websocket import create_connection
 import leasson_allert
+from pydub import AudioSegment
 import time
-import js2py
 from telegram.ext import *
 from telegram import *
 from datetime import date, datetime
@@ -10,7 +10,6 @@ import credentials
 import tiktoken
 import random
 import psutil
-from pydub import AudioSegment
 import json
 from Bard import Chatbot
 import threading
@@ -20,7 +19,8 @@ import os
 import a_cat_lying_on_the_sand
 import googletrans
 import openai
-bard_bot = Chatbot("VwhQuJ4M5qPtJ3ijrK5ZwUlpoksxn688MzFvKRS5HukEy_ilV2JYg6JxryzvFQ6VgYU-dw.")
+bard_bot = Chatbot(
+    "VwhQuJ4M5qPtJ3ijrK5ZwUlpoksxn688MzFvKRS5HukEy_ilV2JYg6JxryzvFQ6VgYU-dw.")
 openai.api_key = credentials.key_gpt
 ws = None
 listfood = []
@@ -31,15 +31,14 @@ listsoup = []
 listidtkb = []
 stoptkb = []
 fntext = None
+last_token = None
 fnnvtext = None
-Post_text_1 = ""
-Text_mess_1 = ""
 context_bot = None
 Update_id = None
 sec_timer = (3*60)/15
 timmer = sec_timer
 global_id_timer = None
-global_id_timer_del=None
+global_id_timer_del = None
 motaJson = None
 temptext = ""
 temp_var_edit_model = None
@@ -65,6 +64,7 @@ tss = Translator(provider='mymemory',
                  from_lang='vi',
                  email='chandoralong@gmail.com')
 
+
 def get_ngrok_url():
     try:
         url = "http://localhost:4040/api/tunnels"
@@ -72,7 +72,8 @@ def get_ngrok_url():
         res_unicode = res.content.decode("utf-8")
         res_json = json.loads(res_unicode)
         return res_json["tunnels"][0]["public_url"]
-    except: return ""
+    except:
+        return ""
 
 
 def loadlistfood():
@@ -100,19 +101,21 @@ def loadlistfood():
     with open('motaModel.json', 'r', encoding='utf-8') as openfile:
         # Reading from json file
         motaJson = json.load(openfile)
-  
-    context_bot.bot.sendMessage(chat_id=-845506997,text = "Chào buổi sáng 🥺")
+
+    context_bot.bot.sendMessage(chat_id=-845506997, text="Chào buổi sáng 🥺")
     context_bot.bot.send_sticker(
-                            chat_id=-845506997, sticker='CAACAgIAAxkBAAEfc7hkMcC6tstuPZ1C2c1Y2-3aDVP-OAACQUAAAuCjggcLgWEAAaSDFpMvBA')
+        chat_id=-845506997, sticker='CAACAgIAAxkBAAEfc7hkMcC6tstuPZ1C2c1Y2-3aDVP-OAACQUAAAuCjggcLgWEAAaSDFpMvBA')
     s = str(get_ngrok_url())
-    context_bot.bot.sendMessage(chat_id=-845506997,text="url connect ssh máy chủ 1810 là: "+s +"\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh root@"+s[6:23]+" -p "+s[24:]+"</code>\nPass root: <span class='tg-spoiler'>18102003</span>", parse_mode="HTML") 
+    context_bot.bot.sendMessage(chat_id=-845506997, text="url connect ssh máy chủ 1810 là: "+s + "\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh root@" +
+                                s[6:23]+" -p "+s[24:]+"</code>\nPass root: <span class='tg-spoiler'>18102003</span>", parse_mode="HTML")
     if a_cat_lying_on_the_sand.start() == False:
         print("Lỗi! Link GPU không thể kết nối!!! 🤖🤖🤖")
-        context_bot.bot.sendMessage(chat_id=-845506997,text = "Lỗi! Link GPU không thể kết nối!!! 🤖🤖🤖")
+        context_bot.bot.sendMessage(
+            chat_id=-845506997, text="Lỗi! Link GPU không thể kết nối!!! 🤖🤖🤖")
     print("loaded")
 
-print('Starting up bot...')
 
+print('Starting up bot...')
 
 
 def checkstopmagic():
@@ -360,61 +363,85 @@ def getinfovps_command(update, context):
                             str((psutil.sensors_temperatures()['coretemp'])))
 
 
-replika_bot = [{"event_name": "message", "payload": {"content": {"type": "text", "text": "im good"}, "meta": {"bot_id": "63b9abe1dde6bc422e7684e0", "client_token": "A7259878-B101-4EAB-82C6-8895884138C6", "chat_id": "63b9abe1dde6bc422e7684e1", "timestamp": "2023-01-07T17:30:41.411Z"}}, "token": "26df34d7-3586-4dca-99df-d2622b8d8713", "auth": {"user_id": "63b9abe1dde6bc422e7684e2", "auth_token": "e8e80209-e28c-4f4a-bcd5-0ce8091eb239", "device_id": "F80D3416-5E5B-42AD-BA4E-DEAFC16C696D"}},
-               {"event_name": "message", "payload": {"content": {"type": "text", "text": "it from my crush"}, "meta": {"bot_id": "64136466a3316e3ba28e90aa", "client_token": "D147F4C9-4115-49E6-AE4F-0E078E32856A", "chat_id": "64136466a3316e3ba28e90ab", "timestamp": "2023-03-16T19:00:30.338Z"}}, "token": "d535c3eb-117c-4e4d-9fd8-fecb6b190afb", "auth": {"user_id": "64136466a3316e3ba28e90ac", "auth_token": "61c04c2f-f3c5-4b6a-9a9f-f15a11afe785", "device_id": "724A1363-1338-4181-98F8-6408D57A2F19"}}]
+replika_bot = [{"event_name": "message", "payload": {"content": {"type": "text", "text": "main"}, "meta": {"bot_id": "63b9abe1dde6bc422e7684e0", "client_token": "69F7DF46-A15F-48AB-9AB7-55CC7E0104DB", "chat_id": "63b9abe1dde6bc422e7684e1", "timestamp": "2023-04-23T21:01:59.589Z"}}, "token": "b4015b32-04af-4d35-9067-6f3027309c8e", "auth": {"user_id": "63b9abe1dde6bc422e7684e2", "auth_token": "9e1ddf77-fd05-41f8-a0ed-55b261f285ff", "device_id": "97B1D6F0-B889-4614-92ED-261376BA7BD8"}},
+               {}]
 
 
-def send(text, u_id="null"):
+def generate_guid():
+    template = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+    guid = ''
+    for char in template:
+        if char == 'x':
+            guid += random.choice('0123456789abcdef')
+        elif char == 'y':
+            guid += random.choice('89ab')
+        else:
+            guid += char
+    return guid.upper()
+
+
+def send(text, u_id="null", if_voice=False, durian=0):
     global ws
+    global last_token
     try:
         ws.close()
     except:
         pass
     finally:
         ws = create_connection("wss://ws.replika.com/v17")
-
-    uid = js2py.EvalJs()
-    uid.execute(
-        r"var guid = function() {  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {    var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);  return v.toString(16); }).toUpperCase();}")
     if u_id == "null":
         send_mess = replika_bot[0]
     else:
         send_mess = replika_bot[1]
-    send_mess['payload']['content']['text'] = text
-    time = datetime.utcnow().isoformat()[:-3]+'Z'
-    send_mess['payload']['meta']['timestamp'] = str(time)
-    send_mess['payload']['meta']['client_token'] = str(uid.guid())
-    send_mess['token'] = str(uid.guid()).lower()
-    #send_mess = str(send_mess).replace('\'', '"')
-    send_mess = json.dumps(send_mess)
-    print("Sending")
-    ws.send(send_mess)
-    print("Sent")
+    if not if_voice:
+        send_mess['payload']['content']['text'] = text
+        time = datetime.utcnow().isoformat()[:-3]+'Z'
+        send_mess['payload']['meta']['timestamp'] = str(time)
+        send_mess['payload']['meta']['client_token'] = str(generate_guid())
+        send_mess['token'] = str(generate_guid()).lower()
+        last_token = send_mess['token']
+        send_mess = json.dumps(send_mess)
+        print("Sending")
+        ws.send(send_mess)
+        print("Sent")
+    else:
+        send_mess['payload']['content']['text'] = ''
+        time = datetime.utcnow().isoformat()[:-3]+'Z'
+        send_mess['payload']['meta']['timestamp'] = str(time)
+        send_mess['payload']['meta']['client_token'] = str(generate_guid())
+        send_mess['token'] = str(generate_guid()).lower()
+        last_token = send_mess['token']
+        send_mess['payload']['content']['voice_message_url'] = text
+        send_mess['payload']['content']['type'] = 'voice_message'
+        send_mess['payload']['content']['duration'] = durian
+        send_mess = json.dumps(send_mess)
+        print("Sending")
+        ws.send(send_mess)
+        print("Sent")
 
 
-eng = True
+check_lang_is_ENG = True
 
 
-def getme():
+def get_message_replika():
     global temptext
     while True:
         time.sleep(0.001)
-        # print("Receiving...")
         try:
             result = ws.recv()
             i = json.loads(result)
-            context_bot.bot.send_chat_action(
-                chat_id=Update_id, action=ChatAction.TYPING)
-            if i['payload']['content']['type'] != 'voice_message':
-                if (i['event_name'] == 'message') and (i['payload']['content']['text'] != Post_text_1) and (i['payload']['content']['text'] != Text_mess_1) and (temptext != i['payload']['content']['text']):
+            if (i['event_name'] == 'message'):
+                if (i['payload']['content']['type'] != 'voice_message') and ('token' not in i):
+                    context_bot.bot.send_chat_action(
+                        chat_id=Update_id, action=ChatAction.TYPING)
                     print(str(i['payload']['content']['text']))
-                    if eng == False:
+                    if check_lang_is_ENG == False:
                         print("Return EN_to_VI:", ts.translate(
                             str(i['payload']['content']['text'])))
                         a1 = ts.translate(str(i['payload']['content']['text'])).replace("Bạn", "Cậu").replace(
                             "bạn", "cậu").replace("BẠN", "CẬU").replace(
                                 "Tôi", "Tớ").replace("tôi",
-                                                    "tớ").replace("TÔI", "TỚ").replace("em yêu anh", "tớ yêu cậu").replace("anh yêu em", "tớ yêu cậu").replace("Anh", "Tớ")
+                                                     "tớ").replace("TÔI", "TỚ").replace("em yêu anh", "tớ yêu cậu").replace("anh yêu em", "tớ yêu cậu").replace("Anh", "Tớ")
                         if a1 == "Em yêu anh":
                             a1 = "Tớ yêu cậu"
                         context_bot.bot.send_message(
@@ -423,14 +450,19 @@ def getme():
                         context_bot.bot.send_message(
                             text=str(i['payload']['content']['text']), chat_id=Update_id)
                     temptext = str(i['payload']['content']['text'])
-                else:
-                    if i['event_name'] == "start_typing":
-                        print(i['event_name'])
-            else:
-                context_bot.bot.send_chat_action(chat_id=Update_id, action=ChatAction.RECORD_VOICE)
-                context_bot.bot.sendVoice(chat_id=Update_id, voice = i['payload']['content']['voice_message_url'])
+                elif (i['payload']['content']['type'] == 'voice_message') and ('token' not in i):
+                    print("Voice: ", i['payload']['content']['text'])
+                    context_bot.bot.send_chat_action(
+                        chat_id=Update_id, action=ChatAction.RECORD_VOICE)
+                    # context_bot.bot.sendVoice(caption=i['payload']['content']['text'],
+                    #                           chat_id=Update_id, voice=i['payload']['content']['voice_message_url'])
+                    context_bot.bot.sendVoice(
+                        chat_id=Update_id, voice=i['payload']['content']['voice_message_url'])
+            elif i['event_name'] == "start_typing":
+                print(i['event_name'])
+
         except:
-            pass
+            continue
 
 
 def gettkbovertime():
@@ -447,32 +479,34 @@ def gettkbovertime():
         if timmer <= 0:
             if len(user_id_list) > 1:
                 if global_id_timer_del and global_id_timer:
-                    context_bot.bot.deleteMessage(message_id=global_id_timer_del.message_id, chat_id=user_id_list[0])
-                    context_bot.bot.editMessageText(chat_id=user_id_list[0], message_id=global_id_timer.message_id,text = "Chờ cậu lâu quá nên tớ đi rep tin nhắn người khác đâyyy, cậu chịu khó vào lại hàng đợi nha 🥹")
+                    context_bot.bot.deleteMessage(
+                        message_id=global_id_timer_del.message_id, chat_id=user_id_list[0])
+                    context_bot.bot.editMessageText(chat_id=user_id_list[0], message_id=global_id_timer.message_id,
+                                                    text="Chờ cậu lâu quá nên tớ đi rep tin nhắn người khác đâyyy, cậu chịu khó vào lại hàng đợi nha 🥹")
                     context_bot.bot.send_sticker(
-                            chat_id=user_id_list[0], sticker='CAACAgIAAxkBAAEfQ_VkLGJapariKMlD6I8JwF4TksCQZAACW0AAAuCjggdvmG8UZv8eUS8E')
-                    global_id_timer=None
-                    global_id_timer_del=None
+                        chat_id=user_id_list[0], sticker='CAACAgIAAxkBAAEfQ_VkLGJapariKMlD6I8JwF4TksCQZAACW0AAAuCjggdvmG8UZv8eUS8E')
+                    global_id_timer = None
+                    global_id_timer_del = None
                 else:
-                    context_bot.bot.sendMessage(chat_id=user_id_list[0],text = "Chờ cậu lâu quá nên tớ đi rep tin nhắn người khác đâyyy, cậu chịu khó vào lại hàng đợi nha 🥹")
+                    context_bot.bot.sendMessage(
+                        chat_id=user_id_list[0], text="Chờ cậu lâu quá nên tớ đi rep tin nhắn người khác đâyyy, cậu chịu khó vào lại hàng đợi nha 🥹")
                     context_bot.bot.send_sticker(
-                            chat_id=user_id_list[0], sticker='CAACAgIAAxkBAAEfQ_VkLGJapariKMlD6I8JwF4TksCQZAACW0AAAuCjggdvmG8UZv8eUS8E')
+                        chat_id=user_id_list[0], sticker='CAACAgIAAxkBAAEfQ_VkLGJapariKMlD6I8JwF4TksCQZAACW0AAAuCjggdvmG8UZv8eUS8E')
                 user_id_list.pop(0)
                 print(user_id_list)
                 if len(user_id_list) > 0:
-                    global_id_timer = context_bot.bot.sendMessage(chat_id=user_id_list[0], text="Tới cậu rùi nè!!! Hãy nhắn tớ nha, chờ cậu áaa 🤭🤭🤭")
+                    global_id_timer = context_bot.bot.sendMessage(
+                        chat_id=user_id_list[0], text="Tới cậu rùi nè!!! Hãy nhắn tớ nha, chờ cậu áaa 🤭🤭🤭")
                     global_id_timer_del = context_bot.bot.send_sticker(
-                            chat_id=user_id_list[0], sticker='CAACAgIAAxkBAAEfPVVkK_4_XpLGVB-QDt_gOzDio8KRCwACuD8AAuCjggeu6M3W5FneWy8E')
+                        chat_id=user_id_list[0], sticker='CAACAgIAAxkBAAEfPVVkK_4_XpLGVB-QDt_gOzDio8KRCwACuD8AAuCjggeu6M3W5FneWy8E')
                     timmer = sec_timer
 
 
 def handle_message(update, context):
-    global Post_text_1
-    global Text_mess_1
-    global eng
+    global check_lang_is_ENG
     global Update_id
-    post_text = ""
-    eng = False
+    check_lang_is_ENG = True
+    post_text = ''
     # Get basic info of the incoming message
     message_type = update.message.chat.type
     text = str(update.message.text).lower()
@@ -493,32 +527,29 @@ def handle_message(update, context):
         text = text.replace('@randomfoodruribot', '').strip()
     if '/replika@randomfoodruribot' in text:
         text = text.replace('/replika@randomfoodruribot', '').strip()
-
     print(
         f'User ({update.message.chat.username}) says: "{text}" in: {message_type}')
     ##########################
     if googletrans.Translator().detect(text).lang == 'en':
         post_text = text
-        eng = True
     else:
+        check_lang_is_ENG = False
         post_text = tss.translate(text).replace("&#39;",
                                                 "'").replace('&quot;', '"')
         print("input VI: ", text)
         print("input VI_to_EN: ", post_text)
     ########################################
-    Post_text_1 = post_text
-    Text_mess_1 = text
     send(post_text)
     Update_id = update.effective_message.chat_id
-    if str(Update_id) == "6267333562":
-        send(post_text, str(Update_id))
+    # if str(Update_id) == "6267333562":
+    #     send(post_text, str(Update_id))
 
 
 def getsshurl_command(update, context):
     s = str(get_ngrok_url())
     buttons = [[InlineKeyboardButton(
         "Click đây để nhắn cho master của tớ 🥺", url="https://t.me/rurimeiko")]]
-    update.message.reply_text(reply_markup=InlineKeyboardMarkup(buttons),text="url connect ssh máy chủ 1810 là: "+s +
+    update.message.reply_text(reply_markup=InlineKeyboardMarkup(buttons), text="url connect ssh máy chủ 1810 là: "+s +
                               "\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh root@"+s[6:23]+" -p "+s[24:]+"</code>\nPass root: nhấp vào nút bên dưới để hỏi pass 🥹", parse_mode="HTML")
 
 
@@ -626,23 +657,31 @@ def callback_init(update, context):
             else:
                 context.bot.sendMessage(
                     text=A, chat_id=query.message.chat_id, parse_mode="MarkdownV2")
-                
+
     elif "bard_" in query.data:
-        callback_history_text = "bard_chat/"+str(query.message.chat_id) + "_h.json"
-        with open(callback_history_text,'r',encoding="utf-8") as json_file:
+        callback_history_text = "bard_chat/" + \
+            str(query.message.chat_id) + "_h.json"
+        with open(callback_history_text, 'r', encoding="utf-8") as json_file:
             data = json.load(json_file)
-        buttons =[]
+        buttons = []
         with open(callback_history_text, "w",  encoding="utf-8") as f:
-            json.dump({'conversation_id':data['conversation_id'],
-                       'response_id':data['response_id'],
-                       'choice_id':data['repon_mess']['choices'][int(query.data[5:])]['id'], 
-                       'last_mess_id': data['last_mess_id'], 
-                       'repon_mess':data['repon_mess']},f)
+            json.dump({'conversation_id': data['conversation_id'],
+                       'response_id': data['response_id'],
+                       'choice_id': data['repon_mess']['choices'][int(query.data[5:])]['id'],
+                       'last_mess_id': data['last_mess_id'],
+                       'repon_mess': data['repon_mess']}, f)
+
         for i in range(len(data['repon_mess']['choices'])):
-            buttons.append(InlineKeyboardButton(str(i+1), callback_data="bard_" + str(i)))
-        context.bot.editMessageText(reply_markup=InlineKeyboardMarkup([buttons]),message_id=str(data['last_mess_id']), chat_id=query.message.chat_id,text=a_cat_lying_on_the_sand.escape(data['repon_mess']['choices'][int(query.data[5:])]['content'][0]), parse_mode="MarkdownV2")
-        
-        
+            if i == int(query.data[5:]):
+                buttons.append(InlineKeyboardButton(
+                    str(i+1)+' ⏺️', callback_data="bard_" + str(i)))
+            else:
+                buttons.append(InlineKeyboardButton(
+                    str(i+1)+' ⬜', callback_data="bard_" + str(i)))
+        context.bot.editMessageText(reply_markup=InlineKeyboardMarkup([buttons]), message_id=str(data['last_mess_id']), chat_id=query.message.chat_id, text=a_cat_lying_on_the_sand.escape(
+            data['repon_mess']['choices'][int(query.data[5:])]['content'][0]), parse_mode="MarkdownV2")
+
+
 ###############################################################################################################
 ########################################## DRAW################################################################
     elif (("variable" in query.data) or ("upscale" in query.data)) and (query.message.chat_id not in user_id_list):
@@ -650,7 +689,7 @@ def callback_init(update, context):
 
     elif ("pnginfo" in query.data):
         info = json.loads(a_cat_lying_on_the_sand.getinfoimage(
-            os.path.join('stable_diffusion',query.data[7:])))
+            os.path.join('stable_diffusion', query.data[7:])))
         del info["Seed resize from"]
         del info["Denoising strength"]
         del info["Model hash"]
@@ -658,7 +697,7 @@ def callback_init(update, context):
             [f'<b>{key}</b>: <code>{value.replace("<","&lt;").replace(">","&gt;")}</code>' for key, value in info.items()])
         context.bot.sendMessage(
             chat_id=query.message.chat_id, text=new_str, parse_mode="HTML")
-        
+
     elif (len(user_id_list) > 0) and (user_id_list[0] == query.message.chat_id):
         if "settingdraw" == (query.data):
             timmer = sec_timer
@@ -689,7 +728,8 @@ def callback_init(update, context):
         elif ("mot\@" in query.data):
             timmer = sec_timer
             listmodel = a_cat_lying_on_the_sand.get_all_model("title")
-            buttons = [[InlineKeyboardButton("Quay lại 🔙", callback_data="mota1")]]
+            buttons = [[InlineKeyboardButton(
+                "Quay lại 🔙", callback_data="mota1")]]
             try:
                 context.bot.deleteMessage(
                     message_id=temp_var_edit_setting_mota.message_id, chat_id=user_id_list[0])
@@ -699,7 +739,7 @@ def callback_init(update, context):
             context.bot.send_chat_action(
                 chat_id=user_id_list[0], action=ChatAction.UPLOAD_PHOTO)
             temp_var_edit_setting_mota = context.bot.send_photo(reply_markup=InlineKeyboardMarkup(buttons), chat_id=user_id_list[0], caption="<b>"+listmodel[int(query.data[5:])]+"</b>"+"\n\n"+motaJson[listmodel[int(query.data[5:])]][0] + "\n\nCậu có thể thử mẫu này nka: " + "<code>" + motaJson[listmodel[int(query.data[5:])]][1] + "</code>" + "\nSteps là: " + "<code>" + motaJson[listmodel[int(query.data[5:])]][2] + "</code>" + "\nSeed là: "+"<code>" + motaJson[listmodel[int(query.data[5:])]][3] + "</code>" + "\nSampler là " + "<code>" + motaJson[listmodel[int(query.data[5:])]][4] + "</code>" + "\nCfg scale là " + "<code>" + motaJson[listmodel[int(query.data[5:])]][6] + "</code>", parse_mode="HTML",
-                                                                photo=open(os.path.join('anhmotamodel',motaJson[listmodel[int(query.data[5:])]][5]), 'rb'))
+                                                                photo=open(os.path.join('anhmotamodel', motaJson[listmodel[int(query.data[5:])]][5]), 'rb'))
 
         elif "setmodeldraw" in (query.data):
             timmer = sec_timer
@@ -749,13 +789,13 @@ def callback_init(update, context):
             allsampler = a_cat_lying_on_the_sand.get_all_sampler()
             for i in range(0, len(allsampler)-(len(allsampler) % 3), 3):
                 buttons.append([InlineKeyboardButton(allsampler[i], callback_data="samplerr" + str(i)), InlineKeyboardButton(allsampler[i+1],
-                            callback_data="samplerr" + str(i+1)), InlineKeyboardButton(allsampler[i+2], callback_data="samplerr" + str(i+2))])
+                                                                                                                             callback_data="samplerr" + str(i+1)), InlineKeyboardButton(allsampler[i+2], callback_data="samplerr" + str(i+2))])
             if len(allsampler) % 3 == 1:
                 buttons.append([InlineKeyboardButton(allsampler[len(
                     allsampler)-1], callback_data="samplerr" + str(len(allsampler)-1))])
             elif len(allsampler) % 3 == 2:
                 buttons.append([InlineKeyboardButton(allsampler[len(allsampler)-2], callback_data="samplerr" + str(len(allsampler)-2)),
-                            InlineKeyboardButton(allsampler[len(allsampler)-1], callback_data="samplerr" + str(len(allsampler)-1))])
+                                InlineKeyboardButton(allsampler[len(allsampler)-1], callback_data="samplerr" + str(len(allsampler)-1))])
             buttons.append([InlineKeyboardButton(
                 "Quay lại 🔙", callback_data="settingdraw")])
             temp_var_edit = context.bot.editMessageText(message_id=temp_var_edit_setting.message_id, reply_markup=InlineKeyboardMarkup(
@@ -773,7 +813,7 @@ def callback_init(update, context):
         elif "drawaimagevippro" in (query.data):
             timmer = sec_timer
             context.bot.deleteMessage(message_id=temp_var_delete.message_id,
-                                    chat_id=live_img_update_id)
+                                      chat_id=live_img_update_id)
 
             print("Prompt: "+fntext)
             print("Negative prompt: " + fnnvtext)
@@ -800,48 +840,49 @@ def callback_init(update, context):
                 buttons), chat_id=user_id_list[0], photo=open(a, 'rb'))
             isit = False
             context.bot.deleteMessage(message_id=temp_var_delete_1.message_id,
-                                    chat_id=live_img_update_id)
+                                      chat_id=live_img_update_id)
             print("done")
             print(a[17:])
 
-            
             if len(user_id_list) > 1:
                 # finish
-                context.bot.sendMessage(chat_id=user_id_list[0], text="Xong rồi nhá, nếu muốn tớ giúp thì ráng đợi những bạn khác nha 🥹🥹🥹")
+                context.bot.sendMessage(
+                    chat_id=user_id_list[0], text="Xong rồi nhá, nếu muốn tớ giúp thì ráng đợi những bạn khác nha 🥹🥹🥹")
                 context.bot.send_sticker(
                     chat_id=user_id_list[0], sticker='CAACAgIAAxkBAAEfPYJkLAHQ9KtOv4G_5HddERkJLNe1qgACT0AAAuCjggcuO1Eat5jdpy8E')
-                
+
                 user_id_list.pop(0)
                 timmer = sec_timer
                 # next user
-                global_id_timer =  context.bot.sendMessage(chat_id=user_id_list[0], text="Tới cậu rùi nè!!! Hãy nhắn tớ nha, chờ cậu áaa 🤭🤭🤭")
-                global_id_timer_del =  context.bot.send_sticker(
+                global_id_timer = context.bot.sendMessage(
+                    chat_id=user_id_list[0], text="Tới cậu rùi nè!!! Hãy nhắn tớ nha, chờ cậu áaa 🤭🤭🤭")
+                global_id_timer_del = context.bot.send_sticker(
                     chat_id=user_id_list[0], sticker='CAACAgIAAxkBAAEfPVVkK_4_XpLGVB-QDt_gOzDio8KRCwACuD8AAuCjggeu6M3W5FneWy8E')
-                
+
             else:
                 # global_id_timer =  context.bot.sendMessage(chat_id=user_id_list[0], text="Còn mỗi cậu à, nhắn tớ tiếp nha!!! 🥺🥺🥺")
                 # global_id_timer_del = context.bot.send_sticker(
                 #     chat_id=user_id_list[0], sticker='CAACAgIAAxkBAAEfPvNkLBvTeEq4Wlb6XRPTwLKlYwY4YwAC6koAAuCjggcjPrpyUZMvHS8E')
                 timmer = sec_timer
-  
+
         elif ("variable" in query.data):
             timmer = sec_timer
-            if query.data[:9]  == "1variable":
+            if query.data[:9] == "1variable":
                 print(query.data[9:])
                 live_img_update_id = user_id_list[0]
-                
+
                 isit = True
-                a = a_cat_lying_on_the_sand.img2img(os.path.join('stable_diffusion',query.data[9:]), fntext, fnnvtext,
+                a = a_cat_lying_on_the_sand.img2img(os.path.join('stable_diffusion', query.data[9:]), fntext, fnnvtext,
                                                     steps, sampling_method, -1, cfg_scale, 512,  512)
                 buttons = [[InlineKeyboardButton("Biến thể 😮", callback_data="variable"+str(a[17:])), InlineKeyboardButton(
                     "Upscale 🤤", callback_data="upscale"+str(a[17:]))], [InlineKeyboardButton("Thông tin chi tiết 📑", callback_data="pnginfo"+str(a[17:]))]]
                 context.bot.send_chat_action(
-                chat_id=user_id_list[0], action=ChatAction.UPLOAD_PHOTO)
+                    chat_id=user_id_list[0], action=ChatAction.UPLOAD_PHOTO)
                 context.bot.send_photo(caption="*Biến thể* của `Ảnh gửi lên`\nSeed: `" + json.loads(a_cat_lying_on_the_sand.getinfoimage(a))[
-                                    'Seed']+"`", reply_markup=InlineKeyboardMarkup(buttons), chat_id=user_id_list[0], photo=open(a, 'rb'), parse_mode="MarkdownV2")
+                    'Seed']+"`", reply_markup=InlineKeyboardMarkup(buttons), chat_id=user_id_list[0], photo=open(a, 'rb'), parse_mode="MarkdownV2")
                 isit = False
                 context.bot.deleteMessage(message_id=temp_var_delete_1.message_id,
-                                        chat_id=live_img_update_id)
+                                          chat_id=live_img_update_id)
                 print("done")
                 print(a[17:])
 
@@ -849,37 +890,39 @@ def callback_init(update, context):
                 print(query.data[8:])
                 live_img_update_id = user_id_list[0]
                 pnginfo = json.loads(a_cat_lying_on_the_sand.getinfoimage(
-                    os.path.join('stable_diffusion',query.data[8:])))
+                    os.path.join('stable_diffusion', query.data[8:])))
                 if 'Negative prompt' in pnginfo:
                     Negative_prompt = pnginfo['Negative prompt']
                 else:
                     Negative_prompt = ""
 
                 isit = True
-                a = a_cat_lying_on_the_sand.img2img(os.path.join('stable_diffusion',query.data[8:]), pnginfo['Prompt'], Negative_prompt,
+                a = a_cat_lying_on_the_sand.img2img(os.path.join('stable_diffusion', query.data[8:]), pnginfo['Prompt'], Negative_prompt,
                                                     steps, sampling_method, -1, cfg_scale, pnginfo['Size'].split('x')[0],  pnginfo['Size'].split('x')[1])
                 buttons = [[InlineKeyboardButton("Biến thể 😮", callback_data="variable"+str(a[17:])), InlineKeyboardButton(
                     "Upscale 🤤", callback_data="upscale"+str(a[17:]))], [InlineKeyboardButton("Thông tin chi tiết 📑", callback_data="pnginfo"+str(a[17:]))]]
                 context.bot.send_chat_action(
-                chat_id=user_id_list[0], action=ChatAction.UPLOAD_PHOTO)
+                    chat_id=user_id_list[0], action=ChatAction.UPLOAD_PHOTO)
                 context.bot.send_photo(caption="*Biến thể* của `"+pnginfo["Seed"]+"`\nSeed: `" + json.loads(a_cat_lying_on_the_sand.getinfoimage(a))[
-                                    'Seed']+"`", reply_markup=InlineKeyboardMarkup(buttons), chat_id=user_id_list[0], photo=open(a, 'rb'), parse_mode="MarkdownV2")
+                    'Seed']+"`", reply_markup=InlineKeyboardMarkup(buttons), chat_id=user_id_list[0], photo=open(a, 'rb'), parse_mode="MarkdownV2")
                 isit = False
                 context.bot.deleteMessage(message_id=temp_var_delete_1.message_id,
-                                        chat_id=live_img_update_id)
+                                          chat_id=live_img_update_id)
                 print("done")
                 print(a[17:])
 
                 if len(user_id_list) > 1:
                     # finish
-                    context.bot.sendMessage(chat_id=user_id_list[0], text="Xong rồi nhá, nếu muốn tớ giúp thì ráng đợi những bạn khác nha 🥹🥹🥹")
+                    context.bot.sendMessage(
+                        chat_id=user_id_list[0], text="Xong rồi nhá, nếu muốn tớ giúp thì ráng đợi những bạn khác nha 🥹🥹🥹")
                     context.bot.send_sticker(
                         chat_id=user_id_list[0], sticker='CAACAgIAAxkBAAEfPYJkLAHQ9KtOv4G_5HddERkJLNe1qgACT0AAAuCjggcuO1Eat5jdpy8E')
-                    
+
                     user_id_list.pop(0)
                     # next user
-                    global_id_timer =  context.bot.sendMessage(chat_id=user_id_list[0], text="Tới cậu rùi nè!!! Hãy nhắn tớ nha, chờ cậu áaa 🤭🤭🤭")
-                    global_id_timer_del= context.bot.send_sticker(
+                    global_id_timer = context.bot.sendMessage(
+                        chat_id=user_id_list[0], text="Tới cậu rùi nè!!! Hãy nhắn tớ nha, chờ cậu áaa 🤭🤭🤭")
+                    global_id_timer_del = context.bot.send_sticker(
                         chat_id=user_id_list[0], sticker='CAACAgIAAxkBAAEfPVVkK_4_XpLGVB-QDt_gOzDio8KRCwACuD8AAuCjggeu6M3W5FneWy8E')
                     timmer = sec_timer
                 else:
@@ -932,24 +975,26 @@ def callback_init(update, context):
             upscaler2 = a_cat_lying_on_the_sand.get_all_upscaler()[
                 int(query.data[10:])]
             context.bot.deleteMessage(message_id=temp_var_edit_upscale.message_id,
-                                    chat_id=user_id_list[0])
+                                      chat_id=user_id_list[0])
             result_path = a_cat_lying_on_the_sand.upscale_img(
-                upscaler1, upscaler2, os.path.join('stable_diffusion',temp_path_upscale))
+                upscaler1, upscaler2, os.path.join('stable_diffusion', temp_path_upscale))
             context.bot.send_chat_action(
                 chat_id=user_id_list[0], action=ChatAction.UPLOAD_DOCUMENT)
             context.bot.sendDocument(caption="Ảnh đã được tớ làm rõ ròi nèeeee ☺️",
-                                    chat_id=user_id_list[0], document=open(result_path, 'rb'))
-            
+                                     chat_id=user_id_list[0], document=open(result_path, 'rb'))
+
             if len(user_id_list) > 1:
                 # finish
-                context.bot.sendMessage(chat_id=user_id_list[0], text="Xong rồi nhá, nếu muốn tớ giúp thì ráng đợi những bạn khác nha 🥹🥹🥹")
+                context.bot.sendMessage(
+                    chat_id=user_id_list[0], text="Xong rồi nhá, nếu muốn tớ giúp thì ráng đợi những bạn khác nha 🥹🥹🥹")
                 context.bot.send_sticker(
                     chat_id=user_id_list[0], sticker='CAACAgIAAxkBAAEfPYJkLAHQ9KtOv4G_5HddERkJLNe1qgACT0AAAuCjggcuO1Eat5jdpy8E')
-                
+
                 user_id_list.pop(0)
                 # next user
-                global_id_timer = context.bot.sendMessage(chat_id=user_id_list[0], text="Tới cậu rùi nè!!! Hãy nhắn tớ nha, chờ cậu áaa 🤭🤭🤭")
-                global_id_timer_del =  context.bot.send_sticker(
+                global_id_timer = context.bot.sendMessage(
+                    chat_id=user_id_list[0], text="Tới cậu rùi nè!!! Hãy nhắn tớ nha, chờ cậu áaa 🤭🤭🤭")
+                global_id_timer_del = context.bot.send_sticker(
                     chat_id=user_id_list[0], sticker='CAACAgIAAxkBAAEfPVVkK_4_XpLGVB-QDt_gOzDio8KRCwACuD8AAuCjggeu6M3W5FneWy8E')
                 timmer = sec_timer
             else:
@@ -959,10 +1004,11 @@ def callback_init(update, context):
                 timmer = sec_timer
 
     elif (len(user_id_list) < 0) or (user_id_list[0] != query.message.chat_id):
-        context.bot.sendMessage(chat_id=query.message.chat_id, text="Cậu đang đứng thứ <b>" + str(user_id_list.index(update.message.chat_id) + 1) + "</b> trong hàng chờ cùng <span class='tg-spoiler'>" + str(random.randint(1000000000, 99999999999)) + "</span> người khác, ráng chờ lát nha 🤥🤭🤥", parse_mode="HTML")
+        context.bot.sendMessage(chat_id=query.message.chat_id, text="Cậu đang đứng thứ <b>" + str(user_id_list.index(update.message.chat_id) + 1) +
+                                "</b> trong hàng chờ cùng <span class='tg-spoiler'>" + str(random.randint(1000000000, 99999999999)) + "</span> người khác, ráng chờ lát nha 🤥🤭🤥", parse_mode="HTML")
         context.bot.send_sticker(
-                chat_id=query.message.chat_id, sticker='CAACAgIAAxkBAAEfPB5kK-t41_kYFuqoEb1wOP7bJDTeVAACuj8AAuCjggcykMz6vc920i8E')
-    
+            chat_id=query.message.chat_id, sticker='CAACAgIAAxkBAAEfPB5kK-t41_kYFuqoEb1wOP7bJDTeVAACuj8AAuCjggcykMz6vc920i8E')
+
 
 # Log errors
 
@@ -1031,7 +1077,7 @@ def debug_command(update, context):
     elif (text == "/debug 18102003") or (text == "/debug@randomfoodruribot 18102003"):
         checkdebug = True
         buttons = [[KeyboardButton("/debug cookie tkb")], [KeyboardButton(
-            "/debug reboot")],[KeyboardButton("/debug url")], [KeyboardButton("/debug logout")]]
+            "/debug reboot")], [KeyboardButton("/debug url")], [KeyboardButton("/debug logout")]]
         update.message.reply_text(
             reply_markup=ReplyKeyboardMarkup(buttons), text="done")
     elif (text == "/debug cookie tkb") or (text == "/debug@randomfoodruribot cookie tkb"):
@@ -1090,9 +1136,6 @@ def null_command(update, context):
     text = str(update.message.text).lower()
     if text == "/null" or text == "/null@randomfoodruribot":
         context.bot.send_video(chat_id=update.message.chat_id, video=open(
-            'vid/Aleph-0.mp4', 'rb'), supports_streaming=True)
-    elif text == "/null yeah" or text == "/null@randomfoodruribot yeah":
-        context.bot.send_video(chat_id=update.message.chat_id, video=open(
             'vid/yeah.mp4', 'rb'), supports_streaming=True)
 
 
@@ -1101,18 +1144,19 @@ settemp = 0.5
 
 isit = False
 
+
 def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0301"):
     encoding = tiktoken.encoding_for_model(model)
     num_tokens = 0
     for message in messages:
-        num_tokens += 4  # every message follows <im_start>{role/name}\n{content}<im_end>\n
+        # every message follows <im_start>{role/name}\n{content}<im_end>\n
+        num_tokens += 4
         for key, value in message.items():
             num_tokens += len(encoding.encode(value))
             if key == "name":  # if there's a name, the role is omitted
                 num_tokens += -1  # role is always required and always 1 token
     num_tokens += 2  # every reply is primed with <im_start>assistant
     return num_tokens
-
 
 
 def gpt_command(update, context):
@@ -1122,15 +1166,18 @@ def gpt_command(update, context):
     history_text = "gpt_chat/"+str(update.message.chat.id) + "_h.json"
     if not os.path.isfile(history_text):
         with open(history_text, "w",  encoding="utf-8") as f:
-            json.dump({"role": "system", "content": "Assistant is a large language model trained by OpenAI."},f)
+            json.dump(
+                {"role": "system", "content": "Assistant is a large language model trained by OpenAI."}, f)
     else:
         print("log have been created")
     text = str(update.message.text).lower()
     if text == "/gpt" or text == "/gpt@randomfoodruribot":
-        buttons = [[KeyboardButton("/gpt clear")], [KeyboardButton("/gpt settemp")]]
+        buttons = [[KeyboardButton("/gpt clear")],
+                   [KeyboardButton("/gpt settemp")]]
         update.message.reply_text(reply_markup=ReplyKeyboardMarkup(
             buttons), text="Nhắn em `/gpt + tin nhắn` để nhắn với tính cách gpt nhé 😊\nĐổi độ sáng tạo bằng `/gpt settemp [số 0-1]` số càng gần 1 thì nội dung phong phú khó đoán, số bé khi muốn câu trả lời chính xác 😊\nDùng lệnh `/gpt clear` để xoá lịch sử chat 😶‍🌫️\nNếu bot không phản hồi gì thì hãy thử dùng lệnh `/gpt clear` nhé ☺️", parse_mode="MarkdownV2")
-        context.bot.sendMessage(chat_id=update.message.chat.id, text="Mô hình hiện tại là <code>"+modelgpt +"</code>\nĐộ sáng tạo là <code>"+str(settemp)+"</code>", parse_mode="HTML")
+        context.bot.sendMessage(chat_id=update.message.chat.id, text="Mô hình hiện tại là <code>" +
+                                modelgpt + "</code>\nĐộ sáng tạo là <code>"+str(settemp)+"</code>", parse_mode="HTML")
 
     elif "/gpt settemp" in text or "/gpt@randomfoodruribot settemp" in text:
         text = text.replace(
@@ -1156,10 +1203,10 @@ def gpt_command(update, context):
             chat_id=update.message.chat.id, action=ChatAction.TYPING)
         text = text.replace("/gpt", "").replace("/gpt@randomfoodruribot", "")
 
-        with open(history_text,'r') as json_file:
+        with open(history_text, 'r') as json_file:
             data = json.load(json_file)
         data_list = [data]
-##############fixlist########################
+############## fixlist########################
         new_list = []
         for item in data_list:
             if isinstance(item, list):
@@ -1168,23 +1215,23 @@ def gpt_command(update, context):
                 new_list.append(item)
         data_list = new_list
         del new_list
-##############fixlist########################
+############## fixlist########################
         data_list.append({"role": "user", "content": text})
         conv_history_tokens = num_tokens_from_messages(data_list)
         print(conv_history_tokens)
         hiccc = False
         while (conv_history_tokens+1000 >= 4096):
             hiccc = True
-            del data_list[1] 
+            del data_list[1]
             conv_history_tokens = num_tokens_from_messages(data_list)
 
-        if hiccc: 
+        if hiccc:
             context.bot.sendMessage(chat_id=update.message.chat.id,
-                                    text="<b>Đạt giới hạn token, một vài ký ức đã bị mất đi...</b>",ParseMode = "HTML")
+                                    text="<b>Đạt giới hạn token, một vài ký ức đã bị mất đi...</b>", ParseMode="HTML")
 
         response = openai.ChatCompletion.create(
             model=modelgpt,
-            messages = data_list,
+            messages=data_list,
             temperature=settemp,
             max_tokens=1000,
         )
@@ -1193,12 +1240,12 @@ def gpt_command(update, context):
                                     text="Replika: Em xin lỗi nhưng có vẻ nhân cách GPT không phản hồi bất cứ thứ gì cả 🥹")
         else:
             context.bot.sendMessage(
-                chat_id=update.message.chat.id, text=a_cat_lying_on_the_sand.escape(response['choices'][0]['message']['content']),parse_mode ="MarkdownV2")
-            data_list.append({"role": "assistant", "content": response['choices'][0]['message']['content']})
+                chat_id=update.message.chat.id, text=a_cat_lying_on_the_sand.escape(response['choices'][0]['message']['content']), parse_mode="MarkdownV2")
+            data_list.append(
+                {"role": "assistant", "content": response['choices'][0]['message']['content']})
             with open(history_text, 'w') as f:
-                json.dump(data_list,f)
+                json.dump(data_list, f)
 
-            
         print("gpt over")
 
 
@@ -1215,10 +1262,11 @@ def stablediffusion(update, context):
     global user_id_list
     if a_cat_lying_on_the_sand.starupcheck() != 200:
         buttons = [[InlineKeyboardButton(
-        "Click đây để nhắn cho master của tớ 🥺", url="https://t.me/rurimeiko")]]
-        context.bot.sendMessage(reply_markup=InlineKeyboardMarkup(buttons), chat_id=update.message.chat.id, text="Hiện tại server xử lý đồ hoạ đang offline rùi, cậu nhấn vào nút bên dưới để liên hệ mở lại server nhaaaa 🥺\nMaster của tớ thân thiện lắm nên cứ thoải mái trò chiện 😊")
+            "Click đây để nhắn cho master của tớ 🥺", url="https://t.me/rurimeiko")]]
+        context.bot.sendMessage(reply_markup=InlineKeyboardMarkup(buttons), chat_id=update.message.chat.id,
+                                text="Hiện tại server xử lý đồ hoạ đang offline rùi, cậu nhấn vào nút bên dưới để liên hệ mở lại server nhaaaa 🥺\nMaster của tớ thân thiện lắm nên cứ thoải mái trò chiện 😊")
     else:
-        if  update.message.chat.id not in user_id_list:
+        if update.message.chat.id not in user_id_list:
             user_id_list.append(update.message.chat.id)
             if len(user_id_list) <= 0:
                 timmer = sec_timer
@@ -1234,33 +1282,34 @@ def stablediffusion(update, context):
                 temp_var_edit_setting = context.bot.sendMessage(reply_markup=InlineKeyboardMarkup(
                     buttons), chat_id=update.message.chat.id, text="Gõ `draw + chữ` để em vẽ hình cho nka 😶‍🌫️\nMẫu: `/draw thứ muốn xuất hiện trong ảnh \!\(thứ không muốn xuất hiện\)`", parse_mode="MarkdownV2")
             elif ("/draw" in text) or ("/draw@randomfoodruribot" in text):
-                    timmer = sec_timer
-                    live_img_update_id = update.message.chat.id
-                    text = text.replace(
-                        "/draw ", "").replace("/draw@randomfoodruribot ", "")
-                    textprom = text.split("!(")
-                    if googletrans.Translator().detect(textprom[0]).lang == 'en':
-                        fntext = textprom[0]
+                timmer = sec_timer
+                live_img_update_id = update.message.chat.id
+                text = text.replace(
+                    "/draw ", "").replace("/draw@randomfoodruribot ", "")
+                textprom = text.split("!(")
+                if googletrans.Translator().detect(textprom[0]).lang == 'en':
+                    fntext = textprom[0]
+                else:
+                    fntext = tss.translate(textprom[0]).replace("&#39;",
+                                                                "'").replace('&quot;', '"')
+                fnnvtext = ""
+                # a_cat_lying_on_the_sand.drawstb(fntext)
+                if len(textprom) == 2:
+                    if googletrans.Translator().detect(textprom[1]).lang == 'en':
+                        fnnvtext = textprom[1]
                     else:
-                        fntext = tss.translate(textprom[0]).replace("&#39;",
-                                                                    "'").replace('&quot;', '"')
-                    fnnvtext = ""
-                    # a_cat_lying_on_the_sand.drawstb(fntext)
-                    if len(textprom) == 2:
-                        if googletrans.Translator().detect(textprom[1]).lang == 'en':
-                            fnnvtext = textprom[1]
-                        else:
-                            fnnvtext = tss.translate(textprom[1]).replace("&#39;",
-                                                                        "'").replace('&quot;', '"')
-                        fnnvtext = fnnvtext.rstrip(")")
+                        fnnvtext = tss.translate(textprom[1]).replace("&#39;",
+                                                                      "'").replace('&quot;', '"')
+                    fnnvtext = fnnvtext.rstrip(")")
 
-                    buttons = [[InlineKeyboardButton("Square(512x512)", callback_data="drawaimagevippro1")], [InlineKeyboardButton(
-                        "Landscape(800x400)", callback_data="drawaimagevippro2")], [InlineKeyboardButton("Portrait(400x800)", callback_data="drawaimagevippro3")]]
-                    a = context.bot.sendMessage(reply_markup=InlineKeyboardMarkup(buttons), chat_id=update.message.chat.id, text="<b>Cậu hãy bỏ qua tin nhắn này nếu không muốn tạo ảnh 🥺</b>\n<b>Prompt:</b> <code>" +
-                                                fntext.replace("<", "&lt;").replace(">", "&gt;")+"</code>\n\n"+"<b>Negative prompt:</b> <code>"+fnnvtext.replace("<", "&lt;").replace(">", "&gt;")+"</code>", parse_mode="HTML")
-                    temp_var_delete = a
+                buttons = [[InlineKeyboardButton("Square(512x512)", callback_data="drawaimagevippro1")], [InlineKeyboardButton(
+                    "Landscape(800x400)", callback_data="drawaimagevippro2")], [InlineKeyboardButton("Portrait(400x800)", callback_data="drawaimagevippro3")]]
+                a = context.bot.sendMessage(reply_markup=InlineKeyboardMarkup(buttons), chat_id=update.message.chat.id, text="<b>Cậu hãy bỏ qua tin nhắn này nếu không muốn tạo ảnh 🥺</b>\n<b>Prompt:</b> <code>" +
+                                            fntext.replace("<", "&lt;").replace(">", "&gt;")+"</code>\n\n"+"<b>Negative prompt:</b> <code>"+fnnvtext.replace("<", "&lt;").replace(">", "&gt;")+"</code>", parse_mode="HTML")
+                temp_var_delete = a
         else:
-            context.bot.sendMessage(chat_id=update.message.chat.id, text="Cậu đang đứng thứ <b>" + str(user_id_list.index(update.message.chat_id) + 1) + "</b> trong hàng chờ cùng <span class='tg-spoiler'>" + str(random.randint(1000000000, 99999999999)) + "</span> người khác, ráng chờ lát nha 🤥🤭🤥", parse_mode="HTML")
+            context.bot.sendMessage(chat_id=update.message.chat.id, text="Cậu đang đứng thứ <b>" + str(user_id_list.index(update.message.chat_id) + 1) +
+                                    "</b> trong hàng chờ cùng <span class='tg-spoiler'>" + str(random.randint(1000000000, 99999999999)) + "</span> người khác, ráng chờ lát nha 🤥🤭🤥", parse_mode="HTML")
             context.bot.send_sticker(
                 chat_id=update.message.chat.id, sticker='CAACAgIAAxkBAAEfPB5kK-t41_kYFuqoEb1wOP7bJDTeVAACuj8AAuCjggcykMz6vc920i8E')
 
@@ -1274,7 +1323,8 @@ def get_image_live():
             time.sleep(1)
             timmer = sec_timer
             if checkiss:
-                a = context_bot.bot.sendMessage(chat_id=live_img_update_id, text=str(round(float(a_cat_lying_on_the_sand.get_process())*100))+"%")
+                a = context_bot.bot.sendMessage(chat_id=live_img_update_id, text=str(
+                    round(float(a_cat_lying_on_the_sand.get_process())*100))+"%")
                 temp_var_delete_1 = a
                 checkiss = False
             else:
@@ -1309,11 +1359,12 @@ def step_setting(update, context):
                 steps = 150
             context.bot.sendMessage(
                 chat_id=update.message.chat.id, text="Đã chỉnh steps thành: "+str(steps))
-            
+
     else:
-        context.bot.sendMessage(chat_id=update.message.chat.id, text="Cậu chưa tham hàng chờ, hãy gõ <code>/draw</code> hoặc <code>/imgedit</code> để tham gia hàng chờ nhé🤥🤭🤥", parse_mode="HTML")
+        context.bot.sendMessage(chat_id=update.message.chat.id,
+                                text="Cậu chưa tham hàng chờ, hãy gõ <code>/draw</code> hoặc <code>/imgedit</code> để tham gia hàng chờ nhé🤥🤭🤥", parse_mode="HTML")
         context.bot.send_sticker(
-                chat_id=update.message.chat_id, sticker='CAACAgIAAxkBAAEfPB5kK-t41_kYFuqoEb1wOP7bJDTeVAACuj8AAuCjggcykMz6vc920i8E')
+            chat_id=update.message.chat_id, sticker='CAACAgIAAxkBAAEfPB5kK-t41_kYFuqoEb1wOP7bJDTeVAACuj8AAuCjggcykMz6vc920i8E')
 
 
 def seed_setting(update, context):
@@ -1330,9 +1381,10 @@ def seed_setting(update, context):
             context.bot.sendMessage(
                 chat_id=update.message.chat.id, text="Đã chỉnh seeds thành: "+str(seeds))
     else:
-        context.bot.sendMessage(chat_id=update.message.chat.id, text="Cậu chưa tham hàng chờ, hãy gõ <code>/draw</code> hoặc <code>/imgedit</code> để tham gia hàng chờ nhé🤥🤭🤥", parse_mode="HTML")
+        context.bot.sendMessage(chat_id=update.message.chat.id,
+                                text="Cậu chưa tham hàng chờ, hãy gõ <code>/draw</code> hoặc <code>/imgedit</code> để tham gia hàng chờ nhé🤥🤭🤥", parse_mode="HTML")
         context.bot.send_sticker(
-                chat_id=update.message.chat.id, sticker='CAACAgIAAxkBAAEfPB5kK-t41_kYFuqoEb1wOP7bJDTeVAACuj8AAuCjggcykMz6vc920i8E')
+            chat_id=update.message.chat.id, sticker='CAACAgIAAxkBAAEfPB5kK-t41_kYFuqoEb1wOP7bJDTeVAACuj8AAuCjggcykMz6vc920i8E')
 
 
 def cfg_setting(update, context):
@@ -1353,63 +1405,66 @@ def cfg_setting(update, context):
             context.bot.sendMessage(
                 chat_id=update.message.chat.id, text="Đã chỉnh cfg scale thành: "+str(cfg_scale))
     else:
-        context.bot.sendMessage(chat_id=update.message.chat.id, text="Cậu chưa tham hàng chờ, hãy gõ <code>/draw</code> hoặc <code>/imgedit</code> để tham gia hàng chờ nhé🤥🤭🤥", parse_mode="HTML")
+        context.bot.sendMessage(chat_id=update.message.chat.id,
+                                text="Cậu chưa tham hàng chờ, hãy gõ <code>/draw</code> hoặc <code>/imgedit</code> để tham gia hàng chờ nhé🤥🤭🤥", parse_mode="HTML")
         context.bot.send_sticker(
-                chat_id=update.message.chat.id, sticker='CAACAgIAAxkBAAEfPB5kK-t41_kYFuqoEb1wOP7bJDTeVAACuj8AAuCjggcykMz6vc920i8E')
+            chat_id=update.message.chat.id, sticker='CAACAgIAAxkBAAEfPB5kK-t41_kYFuqoEb1wOP7bJDTeVAACuj8AAuCjggcykMz6vc920i8E')
 
 
 def gettext_imgedit(update, context):
     if a_cat_lying_on_the_sand.starupcheck() != 200:
         buttons = [[InlineKeyboardButton(
-        "Click đây để nhắn cho master của tớ 🥺", url="https://t.me/rurimeiko")]]
-        context.bot.sendMessage(reply_markup=InlineKeyboardMarkup(buttons), chat_id=update.message.chat.id, text="Hiện tại server xử lý đồ hoạ đang offline rùi, cậu nhấn vào nút bên dưới để liên hệ mở lại server nhaaaa 🥺\nMaster của tớ thân thiện lắm nên cứ thoải mái trò chiện 😊")
+            "Click đây để nhắn cho master của tớ 🥺", url="https://t.me/rurimeiko")]]
+        context.bot.sendMessage(reply_markup=InlineKeyboardMarkup(buttons), chat_id=update.message.chat.id,
+                                text="Hiện tại server xử lý đồ hoạ đang offline rùi, cậu nhấn vào nút bên dưới để liên hệ mở lại server nhaaaa 🥺\nMaster của tớ thân thiện lắm nên cứ thoải mái trò chiện 😊")
     else:
         global timmer
-        if  update.message.chat.id not in user_id_list:
-                    user_id_list.append(update.message.chat.id)
-                    print(user_id_list)
-                    if len(user_id_list) <= 0:
-                        timmer = sec_timer
-
+        if update.message.chat.id not in user_id_list:
+            user_id_list.append(update.message.chat.id)
+            print(user_id_list)
+            if len(user_id_list) <= 0:
+                timmer = sec_timer
 
         if len(user_id_list) > 0 and user_id_list[0] == update.message.chat.id:
             timmer = sec_timer
             update.message.reply_text(
-                    "Cậu hok gửi ảnh kìaaaa, tớ biết lấy ảnh ở đâu mà chạy lệnh này đâyyyyyy 🥹")
+                "Cậu hok gửi ảnh kìaaaa, tớ biết lấy ảnh ở đâu mà chạy lệnh này đâyyyyyy 🥹")
         else:
-            context.bot.sendMessage(chat_id=update.message.chat.id, text="Cậu đang đứng thứ <b>" + str(user_id_list.index(update.message.chat_id) + 1) + "</b> trong hàng chờ cùng <span class='tg-spoiler'>" + str(random.randint(1000000000, 99999999999)) + "</span> người khác, ráng chờ lát nha 🤥🤭🤥", parse_mode="HTML")
+            context.bot.sendMessage(chat_id=update.message.chat.id, text="Cậu đang đứng thứ <b>" + str(user_id_list.index(update.message.chat_id) + 1) +
+                                    "</b> trong hàng chờ cùng <span class='tg-spoiler'>" + str(random.randint(1000000000, 99999999999)) + "</span> người khác, ráng chờ lát nha 🤥🤭🤥", parse_mode="HTML")
             context.bot.send_sticker(
-                    chat_id=update.message.chat.id, sticker='CAACAgIAAxkBAAEfPB5kK-t41_kYFuqoEb1wOP7bJDTeVAACuj8AAuCjggcykMz6vc920i8E')
-   
+                chat_id=update.message.chat.id, sticker='CAACAgIAAxkBAAEfPB5kK-t41_kYFuqoEb1wOP7bJDTeVAACuj8AAuCjggcykMz6vc920i8E')
+
 
 def handle_img_edit(update, context):
     if a_cat_lying_on_the_sand.starupcheck() != 200:
         buttons = [[InlineKeyboardButton(
-        "Click đây để nhắn cho master của tớ 🥺", url="https://t.me/rurimeiko")]]
-        context.bot.sendMessage(reply_markup=InlineKeyboardMarkup(buttons), chat_id=update.message.chat.id, text="Hiện tại server xử lý đồ hoạ đang offline rùi, cậu nhấn vào nút bên dưới để liên hệ mở lại server nhaaaa 🥺\nMaster của tớ thân thiện lắm nên cứ thoải mái trò chiện 😊")
+            "Click đây để nhắn cho master của tớ 🥺", url="https://t.me/rurimeiko")]]
+        context.bot.sendMessage(reply_markup=InlineKeyboardMarkup(buttons), chat_id=update.message.chat.id,
+                                text="Hiện tại server xử lý đồ hoạ đang offline rùi, cậu nhấn vào nút bên dưới để liên hệ mở lại server nhaaaa 🥺\nMaster của tớ thân thiện lắm nên cứ thoải mái trò chiện 😊")
     else:
         global timmer
-        if  update.message.chat.id not in user_id_list:
-                    user_id_list.append(update.message.chat.id)
-                    print(user_id_list)
-                    if len(user_id_list) <= 0:
-                        timmer = sec_timer
+        if update.message.chat.id not in user_id_list:
+            user_id_list.append(update.message.chat.id)
+            print(user_id_list)
+            if len(user_id_list) <= 0:
+                timmer = sec_timer
 
         if len(user_id_list) > 0 and user_id_list[0] == update.message.chat.id:
-            buttons=None
-            global fntext 
-            global fnnvtext 
+            buttons = None
+            global fntext
+            global fnnvtext
             timmer = sec_timer
             text = str(update.message.caption)
             a = context.bot.getFile(
-            update["message"]["photo"][-1]["file_id"])['file_path']
+                update["message"]["photo"][-1]["file_id"])['file_path']
             response = requests.get(a)
-            link = os.path.join('stable_diffusion' , str(uuid.uuid4())+".png")
+            link = os.path.join('stable_diffusion', str(uuid.uuid4())+".png")
             hasvariab = False
             if "/imgedit" in text.lower():
                 if text.strip() != "/imgedit":
                     print(text)
-                    fntext=""
+                    fntext = ""
                     text = text.replace(
                         "/imgedit", "").replace("/imgedit@randomfoodruribot", "")
                     textprom = text.split("!(")
@@ -1425,40 +1480,43 @@ def handle_img_edit(update, context):
                             fnnvtext = textprom[1]
                         else:
                             fnnvtext = tss.translate(textprom[1]).replace("&#39;",
-                                                                        "'").replace('&quot;', '"')
+                                                                          "'").replace('&quot;', '"')
                         fnnvtext = fnnvtext.rstrip(")")
 
                     hasvariab = True
                 if hasvariab and ((update["message"]["photo"][-1]["height"] > 1000) or (update["message"]["photo"][-1]["width"] > 1000)):
-                    buttons = [[InlineKeyboardButton("Biến thể 😮", callback_data="1variable"+link[17:])]]
+                    buttons = [[InlineKeyboardButton(
+                        "Biến thể 😮", callback_data="1variable"+link[17:])]]
                 elif ((update["message"]["photo"][-1]["height"] > 1000) or (update["message"]["photo"][-1]["width"] > 1000)) and (hasvariab == False):
-                    context.bot.sendMessage(chat_id=update.message.chat.id,text="Ảnhhh nì có kích thước lớn quá, tớ hok chịu nỗi, chức năng này chỉ hoạt động với ảnh dưới 1000px thui nha cậu 🥹\nNíu cậu mún lấy biến thể của ảnh nì thì nhớ thêm prompt render nhaaa 🤭")
+                    context.bot.sendMessage(
+                        chat_id=update.message.chat.id, text="Ảnhhh nì có kích thước lớn quá, tớ hok chịu nỗi, chức năng này chỉ hoạt động với ảnh dưới 1000px thui nha cậu 🥹\nNíu cậu mún lấy biến thể của ảnh nì thì nhớ thêm prompt render nhaaa 🤭")
                 elif ((update["message"]["photo"][-1]["height"] < 1000) and (update["message"]["photo"][-1]["width"] < 1000)) and (hasvariab == False):
                     buttons = [[InlineKeyboardButton(
                                 "Upscale 🤤", callback_data="upscale"+link[17:])]]
                 else:
-                    buttons = [[InlineKeyboardButton("Biến thể 😮", callback_data="1variable"+link[17:]),InlineKeyboardButton(
+                    buttons = [[InlineKeyboardButton("Biến thể 😮", callback_data="1variable"+link[17:]), InlineKeyboardButton(
                                 "Upscale 🤤", callback_data="upscale"+link[17:])]]
                 if buttons != None:
                     with open(link, "wb") as f:
                         f.write(response.content)
                     context.bot.send_chat_action(
-                                    chat_id=user_id_list[0], action=ChatAction.UPLOAD_PHOTO)
+                        chat_id=user_id_list[0], action=ChatAction.UPLOAD_PHOTO)
                     context.bot.send_photo(reply_markup=InlineKeyboardMarkup(
-                        buttons), caption = "<b>Cậu hãy bỏ qua tin nhắn này nếu không muốn tạo ảnh 🥺</b>\n<b>Prompt:</b> <code>" +
-                                                fntext.replace("<", "&lt;").replace(">", "&gt;")+"</code>\n\n"+"<b>Negative prompt:</b> <code>"+fnnvtext.replace("<", "&lt;").replace(">", "&gt;")+"</code>",chat_id=update.message.chat.id, photo=open(link, 'rb'), parse_mode="HTML")
-        
+                        buttons), caption="<b>Cậu hãy bỏ qua tin nhắn này nếu không muốn tạo ảnh 🥺</b>\n<b>Prompt:</b> <code>" +
+                        fntext.replace("<", "&lt;").replace(">", "&gt;")+"</code>\n\n"+"<b>Negative prompt:</b> <code>"+fnnvtext.replace("<", "&lt;").replace(">", "&gt;")+"</code>", chat_id=update.message.chat.id, photo=open(link, 'rb'), parse_mode="HTML")
+
         else:
-            context.bot.sendMessage(chat_id=update.message.chat.id, text="Cậu đang đứng thứ <b>" + str(user_id_list.index(update.message.chat_id) + 1) + "</b> trong hàng chờ cùng <span class='tg-spoiler'>" + str(random.randint(1000000000, 99999999999)) + "</span> người khác, ráng chờ lát nha 🤥🤭🤥", parse_mode="HTML")
+            context.bot.sendMessage(chat_id=update.message.chat.id, text="Cậu đang đứng thứ <b>" + str(user_id_list.index(update.message.chat_id) + 1) +
+                                    "</b> trong hàng chờ cùng <span class='tg-spoiler'>" + str(random.randint(1000000000, 99999999999)) + "</span> người khác, ráng chờ lát nha 🤥🤭🤥", parse_mode="HTML")
             context.bot.send_sticker(
-                    chat_id=update.message.chat.id, sticker='CAACAgIAAxkBAAEfPB5kK-t41_kYFuqoEb1wOP7bJDTeVAACuj8AAuCjggcykMz6vc920i8E')
+                chat_id=update.message.chat.id, sticker='CAACAgIAAxkBAAEfPB5kK-t41_kYFuqoEb1wOP7bJDTeVAACuj8AAuCjggcykMz6vc920i8E')
+
 
 def bard_command(update, context):
     global bard_bot
     global re_bard
     history_text = "bard_chat/"+str(update.message.chat.id) + "_h.json"
     text = str(update.message.text).lower()
-    
 
     if text == "/bard" or text == "/bard@randomfoodruribot":
         buttons = [[KeyboardButton("/bard clear")]]
@@ -1473,32 +1531,75 @@ def bard_command(update, context):
             chat_id=update.message.chat.id, text="Đã xoá lịch sử chat với Bard 😊")
     else:
         text = str(update.message.text).lower()
-        text = text.replace("/bard ", "").replace("/bard@randomfoodruribot ", "")
-        print('user: ',text)
+        text = text.replace(
+            "/bard ", "").replace("/bard@randomfoodruribot ", "")
+        print('user: ', text)
 
         if not os.path.isfile(history_text):
             with open(history_text, "w",  encoding="utf-8") as f:
-                json.dump({'conversation_id':bard_bot.conversation_id,'response_id':bard_bot.response_id,'choice_id':bard_bot.choice_id},f)
+                json.dump({'conversation_id': bard_bot.conversation_id,
+                          'response_id': bard_bot.response_id, 'choice_id': bard_bot.choice_id}, f)
 
         else:
             print("chat created")
-        with open(history_text,'r',encoding="utf-8") as json_file:
-                history_chat = json.load(json_file)
+        with open(history_text, 'r', encoding="utf-8") as json_file:
+            history_chat = json.load(json_file)
         bard_bot.conversation_id = history_chat['conversation_id']
         bard_bot.response_id = history_chat['response_id']
         bard_bot.choice_id = history_chat['choice_id']
         re_bard = bard_bot.ask(text)
-        buttons=[]
+        buttons = []
         if 'last_mess_id' in history_chat:
-            context.bot.editMessageText(message_id=str(history_chat['last_mess_id']), chat_id=update.message.chat.id,text=a_cat_lying_on_the_sand.escape(history_chat['repon_mess']['content']), parse_mode="MarkdownV2")
+            try:
+                context.bot.editMessageText(message_id=str(history_chat['last_mess_id']), chat_id=update.message.chat.id, text=a_cat_lying_on_the_sand.escape(
+                    history_chat['repon_mess']['content']), parse_mode="MarkdownV2")
+            except:
+                pass
         for i in range(len(re_bard['choices'])):
-            buttons.append(InlineKeyboardButton(str(i+1), callback_data="bard_" + str(i)))
+            if re_bard['choices'][i]['content'][0] == re_bard['content']:
+                buttons.append(InlineKeyboardButton(
+                    str(i+1)+' ⏺️', callback_data="bard_" + str(i)))
+            else:
+                buttons.append(InlineKeyboardButton(
+                    str(i+1)+' ⬜', callback_data="bard_" + str(i)))
         if len(buttons) == 1:
-            buttons=[]
+            buttons = []
         id_emss = context.bot.sendMessage(reply_markup=InlineKeyboardMarkup([buttons]),
-                chat_id=update.message.chat.id, text=a_cat_lying_on_the_sand.escape(re_bard['content']), parse_mode="MarkdownV2")
+                                          chat_id=update.message.chat.id, text=a_cat_lying_on_the_sand.escape(re_bard['content']), parse_mode="MarkdownV2")
         with open(history_text, "w",  encoding="utf-8") as f:
-                    json.dump({'conversation_id':bard_bot.conversation_id,'response_id':bard_bot.response_id,'choice_id':bard_bot.choice_id, 'last_mess_id': id_emss.message_id, 'repon_mess':re_bard},f)
+            json.dump({'conversation_id': bard_bot.conversation_id, 'response_id': bard_bot.response_id,
+                      'choice_id': bard_bot.choice_id, 'last_mess_id': id_emss.message_id, 'repon_mess': re_bard}, f)
+
+
+def handle_voice_message(update, context):
+    global Update_id
+    print(
+        f'User ({update.message.chat.username}) send voice')
+    Update_id = update.effective_message.chat_id
+    link_voice = context.bot.getFile(
+        update["message"]["voice"]["file_id"])['file_path']
+    response = requests.get(link_voice)
+    if int(update["message"]["voice"]["duration"]) > 18:
+        update.message.reply_text(text="jztr 😳")
+    with open(os.path.join('temp', 'user_voice.oga'), "wb") as f:
+        f.write(response.content)
+    # Load the Oga file
+    ogg_file = AudioSegment.from_file(os.path.join('temp', "user_voice.oga"))
+    # Convert the Ogg file to WAV format
+    ogg_file.export(os.path.join('temp', 'user_voice.wav'), format="wav")
+
+    header = {
+        'Content-Type': 'audio/wav',
+        'x-auth-token': '732d2e05-1524-4dae-a3af-6ccc3ba708a2',
+        'x-device-id': '6AA5F258-5AAA-40CE-A301-140C583549B3',
+        'x-user-id': '63b9abe1dde6bc422e7684e2'
+    }
+    with open(os.path.join('temp', 'user_voice.wav'), "rb") as file:
+        wav_data = file.read()
+    link_voice_uploaded = requests.post(
+        'https://my.replika.com/api/mobile/1.5/voice_messages', headers=header, data=wav_data)
+    send(link_voice_uploaded.json()['voice_message_url'], if_voice=True, durian=float(
+        update["message"]["voice"]["duration"]))
 
 
 def runbot():
@@ -1531,6 +1632,7 @@ def runbot():
 
     dp.add_handler(CommandHandler(command='imgedit', callback=gettext_imgedit))
     dp.add_handler(MessageHandler(Filters.photo, handle_img_edit))
+    dp.add_handler(MessageHandler(Filters.voice, handle_voice_message))
 
     dp.add_handler(CallbackQueryHandler(callback_init))
 
@@ -1548,13 +1650,10 @@ def runbot():
 # Run the program
 if __name__ == '__main__':
     t1 = threading.Thread(target=runbot)
-    t2 = threading.Thread(target=getme)
+    t2 = threading.Thread(target=get_message_replika)
     t3 = threading.Thread(target=gettkbovertime)
     t4 = threading.Thread(target=get_image_live)
-    #t2 = threading.Thread(target=getme)
     t1.start()
     t2.start()
     t3.start()
     t4.start()
-    # t2.join()
-    # ws.close()
