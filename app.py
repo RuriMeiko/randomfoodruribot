@@ -1,3 +1,4 @@
+import re
 import uuid
 from websocket import create_connection
 import leasson_allert
@@ -363,10 +364,6 @@ def getinfovps_command(update, context):
                             str((psutil.sensors_temperatures()['coretemp'])))
 
 
-replika_bot = [{"event_name": "message", "payload": {"content": {"type": "text", "text": "main"}, "meta": {"bot_id": "63b9abe1dde6bc422e7684e0", "client_token": "69F7DF46-A15F-48AB-9AB7-55CC7E0104DB", "chat_id": "63b9abe1dde6bc422e7684e1", "timestamp": "2023-04-23T21:01:59.589Z"}}, "token": "b4015b32-04af-4d35-9067-6f3027309c8e", "auth": {"user_id": "63b9abe1dde6bc422e7684e2", "auth_token": "9e1ddf77-fd05-41f8-a0ed-55b261f285ff", "device_id": "97B1D6F0-B889-4614-92ED-261376BA7BD8"}},
-               {}]
-
-
 def generate_guid():
     template = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
     guid = ''
@@ -389,10 +386,10 @@ def send(text, u_id="null", if_voice=False, durian=0):
         pass
     finally:
         ws = create_connection("wss://ws.replika.com/v17")
-    if u_id == "null":
-        send_mess = replika_bot[0]
-    else:
-        send_mess = replika_bot[1]
+
+    send_mess = {"event_name": "message", "payload": {"content": {"type": "text", "text": "main"}, "meta": {"bot_id": "63b9abe1dde6bc422e7684e0", "client_token": "69F7DF46-A15F-48AB-9AB7-55CC7E0104DB", "chat_id": "63b9abe1dde6bc422e7684e1",
+                                                                                                            "timestamp": "2023-04-23T21:01:59.589Z"}}, "token": "b4015b32-04af-4d35-9067-6f3027309c8e", "auth": {"user_id": "63b9abe1dde6bc422e7684e2", "auth_token": "9e1ddf77-fd05-41f8-a0ed-55b261f285ff", "device_id": "97B1D6F0-B889-4614-92ED-261376BA7BD8"}}
+
     if not if_voice:
         send_mess['payload']['content']['text'] = text
         time = datetime.utcnow().isoformat()[:-3]+'Z'
@@ -401,7 +398,7 @@ def send(text, u_id="null", if_voice=False, durian=0):
         send_mess['token'] = str(generate_guid()).lower()
         last_token = send_mess['token']
         send_mess = json.dumps(send_mess)
-        print("Sending")
+        print("Sending text")
         ws.send(send_mess)
         print("Sent")
     else:
@@ -415,7 +412,7 @@ def send(text, u_id="null", if_voice=False, durian=0):
         send_mess['payload']['content']['type'] = 'voice_message'
         send_mess['payload']['content']['duration'] = durian
         send_mess = json.dumps(send_mess)
-        print("Sending")
+        print("Sending voice")
         ws.send(send_mess)
         print("Sent")
 
@@ -438,12 +435,11 @@ def get_message_replika():
                     if check_lang_is_ENG == False:
                         print("Return EN_to_VI:", ts.translate(
                             str(i['payload']['content']['text'])))
-                        a1 = ts.translate(str(i['payload']['content']['text'])).replace("Bạn", "Cậu").replace(
-                            "bạn", "cậu").replace("BẠN", "CẬU").replace(
-                                "Tôi", "Tớ").replace("tôi",
-                                                     "tớ").replace("TÔI", "TỚ").replace("em yêu anh", "tớ yêu cậu").replace("anh yêu em", "tớ yêu cậu").replace("Anh", "Tớ")
-                        if a1 == "Em yêu anh":
-                            a1 = "Tớ yêu cậu"
+                        a1 = ts.translate(str(i['payload']['content']['text']))
+                        # Thay thế tất cả các từ "Tôi" thành "Tớ"
+                        a1 = re.sub(r"(?i)\bTôi\b", "Tớ", a1)
+                        # Thay thế tất cả các từ "Bạn" thành "Cậu"
+                        a1 = re.sub(r"(?i)\bBạn\b", "Cậu", a1)
                         context_bot.bot.send_message(
                             text=str(a1), chat_id=Update_id)
                     else:
@@ -510,23 +506,16 @@ def handle_message(update, context):
     # Get basic info of the incoming message
     message_type = update.message.chat.type
     text = str(update.message.text).lower()
-    if text[:1] == "/":
-        if text[:26] != "/replika@randomfoodruribot":
-            if text[:8] != "/replika":
-                return
+    if (text[:1] == "/") and ((text[:26] != "/replika@randomfoodruribot") or (text[:8] != "/replika")):
+        return
     # Print a log for debugging
     if (text == "/replika") or (text == "/replika@randomfoodruribot"):
         update.message.reply_text(
             "Nhắn `/replika + nội dung tin nhắn` \nHiện hỗ trợ ngôn ngữ chính là tiếng anh, ngôn ngữ phụ là tiếng việt được dịch bằng google dịch\.", parse_mode="MarkdownV2")
         return
-    # React to group messages only if users mention the bot directly
     # Replace with your bot username
-    if "/replika" in text:
-        text = text.replace('/replika', '').strip()
-    if '@randomfoodruribot' in text:
-        text = text.replace('@randomfoodruribot', '').strip()
-    if '/replika@randomfoodruribot' in text:
-        text = text.replace('/replika@randomfoodruribot', '').strip()
+    text.replace('/replika', '').replace('@randomfoodruribot',
+                                         '').replace('/replika@randomfoodruribot', '').strip()
     print(
         f'User ({update.message.chat.username}) says: "{text}" in: {message_type}')
     ##########################
