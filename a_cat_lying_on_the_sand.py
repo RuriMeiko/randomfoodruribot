@@ -4,7 +4,6 @@ import io
 import base64
 import uuid
 import json
-
 from PIL import Image, PngImagePlugin
 
 url = None
@@ -15,7 +14,7 @@ def reloadlink():
     # Load the data from the file
         data = json.load(file)
     url = data['url']+"/"
-    print (url)
+    print ('LOG | STABLE DIFFUSION:',url)
 session = requests.Session()
 reloadlink()
 def starupcheck():
