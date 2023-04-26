@@ -23,7 +23,6 @@ def reloadcookie():
     # Load the data from the file
         data = json.load(file)
     cookie = {'ASC.AUTH': data['ASC.AUTH']}
-    print (cookie)
 reloadcookie()
 def magic4():
     global magic_var
@@ -45,7 +44,7 @@ def magic4():
             'origin': 'https://sinhvien.ctuet.edu.vn',
             'referer': 'https://sinhvien.ctuet.edu.vn/lich-theo-tuan.html'
         }
-        print(cookie)
+        print('LOG | LEASSON ALLERT:',cookie)
              # 0 = tất cả, 1 = lịch học, 2 = lịch thi
         payload = {'pNgayHienTai': date.today().strftime("%d/%m/%Y"), 'pLoaiLich': 1}
         url = 'https://sinhvien.ctuet.edu.vn/SinhVien/GetDanhSachLichTheoTuan'
@@ -144,7 +143,6 @@ def magic():
                             evening.append(e.text)
                     elif time == 4:
                             dates.append(e.text)
-        # print(afternoon)
 
 
         tkb = []
@@ -178,7 +176,7 @@ def magic():
                 pattern['evening'] = ['null']
 
             tkb.append(pattern)
-        print("ĐÃ CẬP NHẬT TKB THÀNH CÔNG!")
+        print("LOG | LEASSON ALLERT: ĐÃ CẬP NHẬT TKB THÀNH CÔNG!")
         tkb_before = tkb
         return tkb
     else: return tkb_before
@@ -223,12 +221,3 @@ def magic5(i):
     if (magic6(magic()[i], 'morning') == '\!\!del learn\!\! ze zeeeee\!\!\!\!\!') and (magic6(magic()[i], 'afternoon') == '\!\!del learn\!\! ze zeeeee\!\!\!\!\!') and (magic6(magic()[i], 'evening') == '\!\!del learn\!\! ze zeeeee\!\!\!\!\!'):
         return ""
     return magic()[i]['day'] + ', ' + magic()[i]['date'] + '\n' + '*MORNING:*' + '\n' + magic6(magic()[i], 'morning') + '\n' + '*AFTERNOON:*' + '\n' + magic6(magic()[i], 'afternoon') + '\n' + '*EVENING:*' + '\n' + magic6(magic()[i], 'evening')
-
-# print(magic())
-# print(datetime.strptime('12:00:00', "%H:%M:%S") < datetime.strptime(magic()[1]['morning'][0][2][0], "%I:%M %p"))
-# print(magic2())
-
-# print( magic3(datetime.strptime("12:00:00", "%H:%M:%S") - datetime.strptime(datetime.now().strftime("%H:%M:%S"), "%H:%M:%S"), timedelta(hours = 0), timedelta(hours = 1)))
-# print(magic6(magic()[0] , 'morning'))
-# for i in range(7):
-#     print(magic5(i))
