@@ -198,8 +198,8 @@ def random_command(update, context):
     text = str(update.message.text).lower()
     print(
         f'LOG | TELEGARM: User ({update.message.chat.username}) says: "{text}" in: {message_type}')
-    logfoodpath = "log/"+str(update.message.chat.id) + "logfood.txt"
-    logpath = "log/"+str(update.message.chat.id) + "log.txt"
+    logfoodpath = os.path.join("log",str(update.message.chat.id)+"logfood.txt")
+    logpath = os.path.join("log",str(update.message.chat.id)+"log.txt")
     try:
         open(logpath, "x")
         open(logfoodpath, "x")
@@ -238,8 +238,8 @@ def showlog_command(update, context):
     text = str(update.message.text).lower()
     print(
         f'LOG | TELEGARM: User ({update.message.chat.username}) says: "{text}" in: {message_type}')
-    logfoodpath = "log/"+str(update.message.chat.id) + "logfood.txt"
-    logpath = "log/"+str(update.message.chat.id) + "log.txt"
+    logfoodpath = os.path.join("log",str(update.message.chat.id)+"logfood.txt")
+    logpath = os.path.join("log",str(update.message.chat.id)+"log.txt")
     try:
         open(logpath, "x")
         open(logfoodpath, "x")
@@ -678,8 +678,7 @@ def callback_init(update, context):
                     text=A, chat_id=query.message.chat_id, parse_mode="MarkdownV2")
 
     elif "bard_" in query.data:
-        callback_history_text = "bard_chat/" + \
-            str(query.message.chat_id) + "_h.json"
+        callback_history_text = os.path.join("bard_chat",str(query.message.chat_id) + "_h.json")
         with open(callback_history_text, 'r', encoding="utf-8") as json_file:
             data = json.load(json_file)
         buttons = []
@@ -1155,7 +1154,7 @@ def null_command(update, context):
     text = str(update.message.text).lower()
     if text == "/null" or text == "/null@randomfoodruribot":
         context.bot.send_video(chat_id=update.message.chat_id, video=open(
-            'vid/yeah.mp4', 'rb'), supports_streaming=True)
+            os.path.join('vid','yeah.mp4'), 'rb'), supports_streaming=True)
 
 
 modelgpt = "gpt-3.5-turbo"
@@ -1182,7 +1181,7 @@ def gpt_command(update, context):
     global modelgpt
     global settemp
     global max_tokens
-    history_text = "gpt_chat/"+str(update.message.chat.id) + "_h.json"
+    history_text = os.path.join("gpt_chat",str(update.message.chat.id) + "_h.json")
     if not os.path.isfile(history_text):
         with open(history_text, "w",  encoding="utf-8") as f:
             json.dump(
