@@ -4,7 +4,6 @@ import io
 import base64
 import uuid
 import json
-
 from PIL import Image, PngImagePlugin
 
 url = None
