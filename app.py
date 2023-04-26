@@ -111,8 +111,8 @@ def startup():
     context_bot.bot.send_sticker(
         chat_id=-845506997, sticker='CAACAgIAAxkBAAEfc7hkMcC6tstuPZ1C2c1Y2-3aDVP-OAACQUAAAuCjggcLgWEAAaSDFpMvBA')
     s = str(get_ngrok_url())
-    context_bot.bot.sendMessage(chat_id=-845506997, text="url connect ssh máy chủ 1810 là: "+s + "\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh root@" +
-                                s[6:23]+" -p "+s[24:]+"</code>\nPass root: <span class='tg-spoiler'>18102003</span>", parse_mode="HTML")
+    context_bot.bot.sendMessage(chat_id=-845506997, text="url connect ssh máy chủ 1810 là: "+s + "\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh team1810@" +
+                                s[6:23]+" -p "+s[24:]+"</code>\nPass: <span class='tg-spoiler'>18102003</span>", parse_mode="HTML")
     if a_cat_lying_on_the_sand.start() == False:
         print("LOG | SYSTEM: Lỗi! Link GPU không thể kết nối!!! 🤖🤖🤖")
         context_bot.bot.sendMessage(
@@ -569,7 +569,7 @@ def getsshurl_command(update, context):
     buttons = [[InlineKeyboardButton(
         "Click đây để nhắn cho master của tớ 🥺", url="https://t.me/rurimeiko")]]
     update.message.reply_text(reply_markup=InlineKeyboardMarkup(buttons), text="url connect ssh máy chủ 1810 là: "+s +
-                              "\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh root@"+s[6:23]+" -p "+s[24:]+"</code>\nPass root: nhấp vào nút bên dưới để hỏi pass 🥹", parse_mode="HTML")
+                              "\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh team1810@"+s[6:23]+" -p "+s[24:]+"</code>\nPass: nhấp vào nút bên dưới để hỏi pass 🥹", parse_mode="HTML")
 
 
 spamcout = 0
