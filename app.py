@@ -70,15 +70,22 @@ tran_en_jp = Translator(provider='mymemory',
                         email='chandoralong@gmail.com')
 
 
-def get_ngrok_url():
+def get_ngrok_urls():
+    urls = []
     try:
         url = "http://localhost:4040/api/tunnels"
         res = requests.get(url)
         res_unicode = res.content.decode("utf-8")
         res_json = json.loads(res_unicode)
-        return res_json["tunnels"][0]["public_url"]
+        tunnels = res_json["tunnels"]
+        for tunnel in tunnels:
+            if tunnel["config"]["addr"].endswith(":22"):
+                urls.append(tunnel["public_url"])
+            elif tunnel["config"]["addr"].endswith(":4000"):
+                urls.append(tunnel["public_url"])
     except:
-        return ""
+        return ['','']
+    return urls
 
 
 def startup():
@@ -110,9 +117,12 @@ def startup():
     context_bot.bot.sendMessage(chat_id=-845506997, text="Chào buổi sáng 🥺")
     context_bot.bot.send_sticker(
         chat_id=-845506997, sticker='CAACAgIAAxkBAAEfc7hkMcC6tstuPZ1C2c1Y2-3aDVP-OAACQUAAAuCjggcLgWEAAaSDFpMvBA')
-    s = str(get_ngrok_url())
+    urls = get_ngrok_urls()
+    s= urls[0]
     context_bot.bot.sendMessage(chat_id=-845506997, text="url connect ssh máy chủ 1810 là: "+s + "\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh team1810@" +
                                 s[6:23]+" -p "+s[24:]+"</code>\nPass: <span class='tg-spoiler'>18102003</span>", parse_mode="HTML")
+    s = urls[1]
+    context_bot.bot.sendMessage(chat_id=-845506997, text="NoMachine host: <code>" +s[6:23]+"</code>\nPort là  <code>"+s[24:]+"</code>", parse_mode="HTML")
     if a_cat_lying_on_the_sand.start() == False:
         print("LOG | SYSTEM: Lỗi! Link GPU không thể kết nối!!! 🤖🤖🤖")
         context_bot.bot.sendMessage(
@@ -580,12 +590,14 @@ def handle_message(update, context):
 
 
 def getsshurl_command(update, context):
-    s = str(get_ngrok_url())
+    urls = get_ngrok_urls()
+    s= urls[0]
     buttons = [[InlineKeyboardButton(
         "Click đây để nhắn cho master của tớ 🥺", url="https://t.me/rurimeiko")]]
-    update.message.reply_text(reply_markup=InlineKeyboardMarkup(buttons), text="url connect ssh máy chủ 1810 là: "+s +
+    context_bot.bot.sendMessage(chat_id=update.message.chat.id,reply_markup=InlineKeyboardMarkup(buttons), text="url connect ssh máy chủ 1810 là: "+s +
                               "\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh team1810@"+s[6:23]+" -p "+s[24:]+"</code>\nPass: nhấp vào nút bên dưới để hỏi pass 🥹", parse_mode="HTML")
-
+    s = urls[1]
+    context_bot.bot.sendMessage(chat_id=update.message.chat.id, text="NoMachine host: <code>" +s[6:23]+"</code>\nPort là  <code>"+s[24:]+"</code>", parse_mode="HTML")
 
 spamcout = 0
 
