@@ -71,21 +71,24 @@ tran_en_jp = Translator(provider='mymemory',
 
 
 def get_ngrok_urls():
-    urls = []
     try:
         url = "http://localhost:4040/api/tunnels"
         res = requests.get(url)
         res_unicode = res.content.decode("utf-8")
         res_json = json.loads(res_unicode)
         tunnels = res_json["tunnels"]
-        for tunnel in tunnels:
-            if tunnel["config"]["addr"].endswith(":22"):
-                urls.append(tunnel["public_url"])
-            elif tunnel["config"]["addr"].endswith(":4000"):
-                urls.append(tunnel["public_url"])
+        # Lọc các kết nối ngrok để tìm URL của cổng 22 và cổng 4000
+        tunnel_22 = next((t for t in tunnels if t["config"]["addr"].endswith(":22")), None)
+        tunnel_4000 = next((t for t in tunnels if t["config"]["addr"].endswith(":4000")), None)
+        # Lưu trữ URL của cổng 22 và cổng 4000 vào danh sách kết quả trả về
+        urls = []
+        if tunnel_22 is not None:
+            urls.append(tunnel_22["public_url"])
+        if tunnel_4000 is not None:
+            urls.append(tunnel_4000["public_url"])
+        return urls
     except:
         return ['','']
-    return urls
 
 
 def startup():
