@@ -1144,7 +1144,7 @@ def debug_command(update, context):
     elif (text == "/debug reboot") or (text == "/debug@randomfoodruribot reboot"):
         if checkdebug:
             update.message.reply_text(text="Lệnh được thực thi! 🌫️")
-            os.system("sudo reboot")
+            os.system("echo 18102003 | sudo -S reboot")
         else:
             update.message.reply_text(text="Không có quyền")
 
