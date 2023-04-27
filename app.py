@@ -57,17 +57,17 @@ temp_var_edit_setting_mota = None
 temp_var_edit_upscale = None
 temp_path_upscale = None
 tran_en_vi = Translator(provider='mymemory',
-                to_lang='vi',
-                from_lang='en',
-                email='chandoralong@gmail.com')
+                        to_lang='vi',
+                        from_lang='en',
+                        email='chandoralong@gmail.com')
 tran_vi_en = Translator(provider='mymemory',
-                 to_lang='en',
-                 from_lang='vi',
-                 email='chandoralong@gmail.com')
+                        to_lang='en',
+                        from_lang='vi',
+                        email='chandoralong@gmail.com')
 tran_en_jp = Translator(provider='mymemory',
-                 to_lang='ja',
-                 from_lang='en',
-                 email='chandoralong@gmail.com')
+                        to_lang='ja',
+                        from_lang='en',
+                        email='chandoralong@gmail.com')
 
 
 def get_ngrok_url():
@@ -198,8 +198,9 @@ def random_command(update, context):
     text = str(update.message.text).lower()
     print(
         f'LOG | TELEGARM: User ({update.message.chat.username}) says: "{text}" in: {message_type}')
-    logfoodpath = os.path.join("log",str(update.message.chat.id)+"logfood.txt")
-    logpath = os.path.join("log",str(update.message.chat.id)+"log.txt")
+    logfoodpath = os.path.join("log", str(
+        update.message.chat.id)+"logfood.txt")
+    logpath = os.path.join("log", str(update.message.chat.id)+"log.txt")
     try:
         open(logpath, "x")
         open(logfoodpath, "x")
@@ -238,8 +239,9 @@ def showlog_command(update, context):
     text = str(update.message.text).lower()
     print(
         f'LOG | TELEGARM: User ({update.message.chat.username}) says: "{text}" in: {message_type}')
-    logfoodpath = os.path.join("log",str(update.message.chat.id)+"logfood.txt")
-    logpath = os.path.join("log",str(update.message.chat.id)+"log.txt")
+    logfoodpath = os.path.join("log", str(
+        update.message.chat.id)+"logfood.txt")
+    logpath = os.path.join("log", str(update.message.chat.id)+"log.txt")
     try:
         open(logpath, "x")
         open(logfoodpath, "x")
@@ -277,7 +279,7 @@ def addfood_command(update, context):
                 update.message.reply_text(
                     "Nhắn `/addfood + món ăn` cho bé nhé 🥺 \nVí dụ nè: `/addfood Tôm rim`", parse_mode="MarkdownV2")
             else:
-                print('LOG | RANDOM FOOD:',text)
+                print('LOG | RANDOM FOOD:', text)
                 f = open("food.txt", "a", encoding="utf-8")
                 f.write(str(text)+"\n")
                 f.close()
@@ -309,7 +311,7 @@ def addsoup_command(update, context):
                 update.message.reply_text(
                     "Nhắn `/addsoup + món ăn` cho bé nhé 🥺 \nVí dụ nè: `/addsoup Súp miso`", parse_mode="MarkdownV2")
             else:
-                print('LOG | RANDOM FOOD:',text)
+                print('LOG | RANDOM FOOD:', text)
                 f = open("soup.txt", "a", encoding="utf-8")
                 f.write(str(text)+"\n")
                 f.close()
@@ -435,11 +437,13 @@ def get_message_replika():
                 if (i['payload']['content']['type'] != 'voice_message') and ('token' not in i):
                     context_bot.bot.send_chat_action(
                         chat_id=Update_id, action=ChatAction.TYPING)
-                    print('LOG | REPLIKA TEXT MESSAGE:',str(i['payload']['content']['text']))
+                    print('LOG | REPLIKA TEXT MESSAGE:', str(
+                        i['payload']['content']['text']))
                     if check_lang_is_ENG == False:
                         print("LOG | REPLIKA TEXT MESSAGE EN TO VI:", tran_en_vi.translate(
                             str(i['payload']['content']['text'])))
-                        a1 = tran_en_vi.translate(str(i['payload']['content']['text']))
+                        a1 = tran_en_vi.translate(
+                            str(i['payload']['content']['text']))
                         # Thay thế tất cả các từ "Tôi" thành "Tớ"
                         a1 = re.sub(r"(?i)\bTôi\b", "Tớ", a1)
                         # Thay thế tất cả các từ "Bạn" thành "Cậu"
@@ -451,28 +455,34 @@ def get_message_replika():
                             text=str(i['payload']['content']['text']), chat_id=Update_id)
                     temptext = str(i['payload']['content']['text'])
                 elif (i['payload']['content']['type'] == 'voice_message') and ('token' not in i):
-                    print("LOG | REPLIKA VOICE MESSAGE: ", i['payload']['content']['text'])
-                    #speaker = [bình thường = 2, ngọt = 0, Tsuntsun = 6, gợi cảm = 4, thì thầm = 36, nói nhỏ nhỏ = 37]
-                    speaker= 0
+                    print("LOG | REPLIKA VOICE MESSAGE: ",
+                          i['payload']['content']['text'])
+                    # speaker = [bình thường = 2, ngọt = 0, Tsuntsun = 6, gợi cảm = 4, thì thầm = 36, nói nhỏ nhỏ = 37]
+                    speaker = 0
                     context_bot.bot.send_chat_action(
                         chat_id=Update_id, action=ChatAction.RECORD_VOICE)
-                    url_jp = 'https://deprecatedapis.tts.quest/v2/voicevox/audio/?key=S81-63C6a8N4w-3&speaker='+str(speaker)+'&intonationScale=1&text='+tran_en_jp.translate(i['payload']['content']['text'])
+                    url_jp = 'https://deprecatedapis.tts.quest/v2/voicevox/audio/?key=S81-63C6a8N4w-3&speaker=' + \
+                        str(speaker)+'&intonationScale=1&text=' + \
+                        tran_en_jp.translate(
+                            i['payload']['content']['text'])
                     response = requests.get(url_jp)
                     if response.status_code == 200:
                         # save the WAV file to disk
-                        with open(os.path.join('temp',"jp_replika.wav"), "wb") as f:
+                        with open(os.path.join('temp', "jp_replika.wav"), "wb") as f:
                             f.write(response.content)
                         print("LOG | REPLIKA VOICE: File saved successfully.")
                     else:
                         print("LOG | REPLIKA VOICE: Failed to download file.")
 
                     # load audio file with pydub
-                    audio = AudioSegment.from_wav(os.path.join('temp',"jp_replika.wav"))
+                    audio = AudioSegment.from_wav(
+                        os.path.join('temp', "jp_replika.wav"))
 
                     # export audio file with opus encoding using pydub
-                    audio.export(os.path.join('temp',"jp_replika.ogg"), format='ogg', codec='libopus')    
-                    #send voice by request because send by sendVoice build in too slowwwwwwww ;-;
-                    with open(os.path.join('temp',"jp_replika.ogg"),'rb') as audio:
+                    audio.export(os.path.join('temp', "jp_replika.ogg"),
+                                 format='ogg', codec='libopus')
+                    # send voice by request because send by sendVoice build in too slowwwwwwww ;-;
+                    with open(os.path.join('temp', "jp_replika.ogg"), 'rb') as audio:
                         payload = {
                             'chat_id':  Update_id,
                             'caption': i['payload']['content']['text']
@@ -481,11 +491,12 @@ def get_message_replika():
                             'voice': audio.read(),
                         }
                         requests.post(
-                            "https://api.telegram.org/bot{token}/sendVoice".format(token=credentials.bot_token),
+                            "https://api.telegram.org/bot{token}/sendVoice".format(
+                                token=credentials.bot_token),
                             data=payload,
                             files=files)
             elif i['event_name'] == "start_typing":
-                print('LOG | REPLIKA:',i['event_name'])
+                print('LOG | REPLIKA:', i['event_name'])
 
         except:
             continue
@@ -519,7 +530,7 @@ def gettkbovertime():
                     context_bot.bot.send_sticker(
                         chat_id=user_id_list[0], sticker='CAACAgIAAxkBAAEfQ_VkLGJapariKMlD6I8JwF4TksCQZAACW0AAAuCjggdvmG8UZv8eUS8E')
                 user_id_list.pop(0)
-                print('LOG | STABLE DIFFUSION:',user_id_list)
+                print('LOG | STABLE DIFFUSION:', user_id_list)
                 if len(user_id_list) > 0:
                     global_id_timer = context_bot.bot.sendMessage(
                         chat_id=user_id_list[0], text="Tới cậu rùi nè!!! Hãy nhắn tớ nha, chờ cậu áaa 🤭🤭🤭")
@@ -536,12 +547,16 @@ def handle_message(update, context):
     # Get basic info of the incoming message
     message_type = update.message.chat.type
     text = str(update.message.text).lower()
-    if (text[:1] == "/") and ((text[:26] != "/replika@randomfoodruribot") or (text[:8] != "/replika")):
+    if (text[:1] == "/") and (text[:26] != "/replika@randomfoodruribot") and (text[:8] != "/replika"):
         return
     # Print a log for debugging
-    if (text == "/replika") or (text == "/replika@randomfoodruribot"):
-        update.message.reply_text(
-            "Nhắn `/replika + nội dung tin nhắn` \nHiện hỗ trợ ngôn ngữ chính là tiếng anh, ngôn ngữ phụ là tiếng việt được dịch bằng google dịch\.", parse_mode="MarkdownV2")
+    if ("/replika" == text) or ("/replika@randomfoodruribot" == text):
+        if message_type == 'private':
+            update.message.reply_text(
+                "Cứ nhắn tin hay gửi voice cho em đều được nha\nHiện *tin nhắn* hỗ trợ ngôn ngữ chính là tiếng anh, ngôn ngữ phụ là tiếng việt được dịch bằng google dịch\.", parse_mode="MarkdownV2")
+        else:
+            update.message.reply_text(
+                "Nhắn `/replika + nội dung tin nhắn` hoặc tag em vào và gửi voice nha\nHiện *tin nhắn* hỗ trợ ngôn ngữ chính là tiếng anh, ngôn ngữ phụ là tiếng việt được dịch bằng google dịch\.", parse_mode="MarkdownV2")
         return
     # Replace with your bot username
     text.replace('/replika', '').replace('@randomfoodruribot',
@@ -554,7 +569,7 @@ def handle_message(update, context):
     else:
         check_lang_is_ENG = False
         post_text = tran_vi_en.translate(text).replace("&#39;",
-                                                "'").replace('&quot;', '"')
+                                                       "'").replace('&quot;', '"')
         print("LOG | REPLIKA INPUT VI:", text)
         print("LOG | REPLIKA OUTPUT EN:", post_text)
     ########################################
@@ -678,7 +693,8 @@ def callback_init(update, context):
                     text=A, chat_id=query.message.chat_id, parse_mode="MarkdownV2")
 
     elif "bard_" in query.data:
-        callback_history_text = os.path.join("bard_chat",str(query.message.chat_id) + "_h.json")
+        callback_history_text = os.path.join(
+            "bard_chat", str(query.message.chat_id) + "_h.json")
         with open(callback_history_text, 'r', encoding="utf-8") as json_file:
             data = json.load(json_file)
         buttons = []
@@ -860,7 +876,7 @@ def callback_init(update, context):
             context.bot.deleteMessage(message_id=temp_var_delete_1.message_id,
                                       chat_id=live_img_update_id)
             print("LOG | STABLE DIFFUSION: Done")
-            print('LOG | STABLE DIFFUSION:',a[17:])
+            print('LOG | STABLE DIFFUSION:', a[17:])
 
             if len(user_id_list) > 1:
                 # finish
@@ -886,7 +902,7 @@ def callback_init(update, context):
         elif ("variable" in query.data):
             timmer = sec_timer
             if query.data[:9] == "1variable":
-                print('LOG | STABLE DIFFUSION:',query.data[9:])
+                print('LOG | STABLE DIFFUSION:', query.data[9:])
                 live_img_update_id = user_id_list[0]
 
                 isit = True
@@ -902,10 +918,10 @@ def callback_init(update, context):
                 context.bot.deleteMessage(message_id=temp_var_delete_1.message_id,
                                           chat_id=live_img_update_id)
                 print("LOG | STABLE DIFFUSION: Done")
-                print('LOG | STABLE DIFFUSION:',a[17:])
+                print('LOG | STABLE DIFFUSION:', a[17:])
 
             else:
-                print('LOG | STABLE DIFFUSION:',query.data[8:])
+                print('LOG | STABLE DIFFUSION:', query.data[8:])
                 live_img_update_id = user_id_list[0]
                 pnginfo = json.loads(a_cat_lying_on_the_sand.getinfoimage(
                     os.path.join('stable_diffusion', query.data[8:])))
@@ -927,7 +943,7 @@ def callback_init(update, context):
                 context.bot.deleteMessage(message_id=temp_var_delete_1.message_id,
                                           chat_id=live_img_update_id)
                 print("LOG | STABLE DIFFUSION: Done")
-                print('LOG | STABLE DIFFUSION:',a[17:])
+                print('LOG | STABLE DIFFUSION:', a[17:])
 
                 if len(user_id_list) > 1:
                     # finish
@@ -952,7 +968,7 @@ def callback_init(update, context):
         elif ("upscale" in query.data):
             timmer = sec_timer
             buttons = []
-            print('LOG | STABLE DIFFUSION:',query.data[7:])
+            print('LOG | STABLE DIFFUSION:', query.data[7:])
             temp_path_upscale = query.data[7:]
             upscaler_all = a_cat_lying_on_the_sand.get_all_upscaler()
             for i in range(0, len(upscaler_all)-(len(upscaler_all) % 2), 2):
@@ -972,7 +988,7 @@ def callback_init(update, context):
             upscaler1 = a_cat_lying_on_the_sand.get_all_upscaler()[
                 int(query.data[10:])]
             print("LOG | STABLE DIFFUSION: CALLED UPSCALE")
-            print('LOG | STABLE DIFFUSION:',query.data[10:])
+            print('LOG | STABLE DIFFUSION:', query.data[10:])
 
             for i in range(0, len(upscaler_all)-(len(upscaler_all) % 2), 2):
                 buttons.append([InlineKeyboardButton(upscaler_all[i], callback_data="upscalir2+"+str(
@@ -985,7 +1001,7 @@ def callback_init(update, context):
                 buttons), chat_id=user_id_list[0], text="Model <b> upscaler 1 là: "+upscaler1+"</b>\nChọn model <b>upscaler 2</b> nka !!! 😮", parse_mode="HTML")
 
         elif ("upscalir2+" in query.data):
-            print('LOG | STABLE DIFFUSION:',query.data[10:])
+            print('LOG | STABLE DIFFUSION:', query.data[10:])
             timmer = sec_timer*10
             context.bot.send_chat_action(
                 chat_id=user_id_list[0], action=ChatAction.UPLOAD_DOCUMENT)
@@ -1047,7 +1063,7 @@ def tkb_command(update, context):
             buttons), text="Cậu có thể dùng lệnh `/tkb print` để xem toàn bộ thời khoá biểu trong tuần 🌞\nHoặc dùng lệnh `/tkb reg` để đăng ký nhận thông báo môn học trước 1 tiếng từ tớ nha 😘", parse_mode="MarkdownV2")
     if "/tkb" in text:
         text = text.replace('/tkb', '').strip()
-    print('LOG | LEASSON ALLERT:',text)
+    print('LOG | LEASSON ALLERT:', text)
     if text == "print":
         buttons = [[InlineKeyboardButton("Sắp học 🫥", callback_data="tkbnow")], [InlineKeyboardButton("Ngày mai 😮", callback_data="tkbtmr")], [InlineKeyboardButton("Thứ 2 🤨", callback_data="Thứ 2")], [InlineKeyboardButton("Thứ 3 🌞", callback_data="Thứ 3")], [InlineKeyboardButton("Thứ 4 🥹", callback_data="Thứ 4")], [
             InlineKeyboardButton("Thứ 5 😙", callback_data="Thứ 5")], [InlineKeyboardButton("Thứ 6 😍", callback_data="Thứ 6")], [InlineKeyboardButton("Thứ 7 🤗", callback_data="Thứ 7")], [InlineKeyboardButton("Chủ nhật ❤️", callback_data="Chủ nhật")], [InlineKeyboardButton("Toàn bộ tkb 🤤", callback_data="full")]]
@@ -1154,7 +1170,7 @@ def null_command(update, context):
     text = str(update.message.text).lower()
     if text == "/null" or text == "/null@randomfoodruribot":
         context.bot.send_video(chat_id=update.message.chat_id, video=open(
-            os.path.join('vid','yeah.mp4'), 'rb'), supports_streaming=True)
+            os.path.join('vid', 'yeah.mp4'), 'rb'), supports_streaming=True)
 
 
 modelgpt = "gpt-3.5-turbo"
@@ -1181,7 +1197,8 @@ def gpt_command(update, context):
     global modelgpt
     global settemp
     global max_tokens
-    history_text = os.path.join("gpt_chat",str(update.message.chat.id) + "_h.json")
+    history_text = os.path.join("gpt_chat", str(
+        update.message.chat.id) + "_h.json")
     if not os.path.isfile(history_text):
         with open(history_text, "w",  encoding="utf-8") as f:
             json.dump(
@@ -1236,7 +1253,7 @@ def gpt_command(update, context):
 ############## fixlist########################
         data_list.append({"role": "user", "content": text})
         conv_history_tokens = num_tokens_from_messages(data_list)
-        print('LOG | GPT:',conv_history_tokens)
+        print('LOG | GPT:', conv_history_tokens)
         hiccc = False
         while (conv_history_tokens+1000 >= 4096):
             hiccc = True
@@ -1288,7 +1305,7 @@ def stablediffusion(update, context):
             user_id_list.append(update.message.chat.id)
             if len(user_id_list) <= 0:
                 timmer = sec_timer
-            print('LOG | STABLE DIFFUSION:',user_id_list)
+            print('LOG | STABLE DIFFUSION:', user_id_list)
         if len(user_id_list) > 0 and user_id_list[0] == update.message.chat.id:
             print(
                 f'LOG | TELEGARM: User ({update.message.chat.username}) say {update.message.text}')
@@ -1309,7 +1326,7 @@ def stablediffusion(update, context):
                     fntext = textprom[0]
                 else:
                     fntext = tran_vi_en.translate(textprom[0]).replace("&#39;",
-                                                                "'").replace('&quot;', '"')
+                                                                       "'").replace('&quot;', '"')
                 fnnvtext = ""
                 # a_cat_lying_on_the_sand.drawstb(fntext)
                 if len(textprom) == 2:
@@ -1317,7 +1334,7 @@ def stablediffusion(update, context):
                         fnnvtext = textprom[1]
                     else:
                         fnnvtext = tran_vi_en.translate(textprom[1]).replace("&#39;",
-                                                                      "'").replace('&quot;', '"')
+                                                                             "'").replace('&quot;', '"')
                     fnnvtext = fnnvtext.rstrip(")")
 
                 buttons = [[InlineKeyboardButton("Square(512x512)", callback_data="drawaimagevippro1")], [InlineKeyboardButton(
@@ -1439,7 +1456,7 @@ def gettext_imgedit(update, context):
         global timmer
         if update.message.chat.id not in user_id_list:
             user_id_list.append(update.message.chat.id)
-            print('LOG | STABLE DIFFUSION:',user_id_list)
+            print('LOG | STABLE DIFFUSION:', user_id_list)
             if len(user_id_list) <= 0:
                 timmer = sec_timer
 
@@ -1464,7 +1481,7 @@ def handle_img_edit(update, context):
         global timmer
         if update.message.chat.id not in user_id_list:
             user_id_list.append(update.message.chat.id)
-            print('LOG | STABLE DIFFUSION:',user_id_list)
+            print('LOG | STABLE DIFFUSION:', user_id_list)
             if len(user_id_list) <= 0:
                 timmer = sec_timer
 
@@ -1472,6 +1489,8 @@ def handle_img_edit(update, context):
             buttons = None
             global fntext
             global fnnvtext
+            fnnvtext = ''
+            fntext = ''
             timmer = sec_timer
             text = str(update.message.caption)
             a = context.bot.getFile(
@@ -1481,7 +1500,8 @@ def handle_img_edit(update, context):
             hasvariab = False
             if "/imgedit" in text.lower():
                 if text.strip() != "/imgedit":
-                    print('LOG | STABLE DIFFUSION INPUT PROMPT:',text)
+                    hasvariab = True
+                    print('LOG | STABLE DIFFUSION INPUT PROMPT:', text)
                     fntext = ""
                     text = text.replace(
                         "/imgedit", "").replace("/imgedit@randomfoodruribot", "")
@@ -1490,7 +1510,7 @@ def handle_img_edit(update, context):
                         fntext = textprom[0]
                     else:
                         fntext = tran_vi_en.translate(textprom[0]).replace("&#39;",
-                                                                    "'").replace('&quot;', '"')
+                                                                           "'").replace('&quot;', '"')
                     fnnvtext = ""
                     # a_cat_lying_on_the_sand.drawstb(fntext)
                     if len(textprom) == 2:
@@ -1498,30 +1518,29 @@ def handle_img_edit(update, context):
                             fnnvtext = textprom[1]
                         else:
                             fnnvtext = tran_vi_en.translate(textprom[1]).replace("&#39;",
-                                                                          "'").replace('&quot;', '"')
+                                                                                 "'").replace('&quot;', '"')
                         fnnvtext = fnnvtext.rstrip(")")
 
-                    hasvariab = True
-                if hasvariab and ((update["message"]["photo"][-1]["height"] > 1000) or (update["message"]["photo"][-1]["width"] > 1000)):
-                    buttons = [[InlineKeyboardButton(
-                        "Biến thể 😮", callback_data="1variable"+link[17:])]]
-                elif ((update["message"]["photo"][-1]["height"] > 1000) or (update["message"]["photo"][-1]["width"] > 1000)) and (hasvariab == False):
-                    context.bot.sendMessage(
-                        chat_id=update.message.chat.id, text="Ảnhhh nì có kích thước lớn quá, tớ hok chịu nỗi, chức năng này chỉ hoạt động với ảnh dưới 1000px thui nha cậu 🥹\nNíu cậu mún lấy biến thể của ảnh nì thì nhớ thêm prompt render nhaaa 🤭")
-                elif ((update["message"]["photo"][-1]["height"] < 1000) and (update["message"]["photo"][-1]["width"] < 1000)) and (hasvariab == False):
-                    buttons = [[InlineKeyboardButton(
-                                "Upscale 🤤", callback_data="upscale"+link[17:])]]
-                else:
-                    buttons = [[InlineKeyboardButton("Biến thể 😮", callback_data="1variable"+link[17:]), InlineKeyboardButton(
-                                "Upscale 🤤", callback_data="upscale"+link[17:])]]
-                if buttons != None:
-                    with open(link, "wb") as f:
-                        f.write(response.content)
-                    context.bot.send_chat_action(
-                        chat_id=user_id_list[0], action=ChatAction.UPLOAD_PHOTO)
-                    context.bot.send_photo(reply_markup=InlineKeyboardMarkup(
-                        buttons), caption="<b>Cậu hãy bỏ qua tin nhắn này nếu không muốn tạo ảnh 🥺</b>\n<b>Prompt:</b> <code>" +
-                        fntext.replace("<", "&lt;").replace(">", "&gt;")+"</code>\n\n"+"<b>Negative prompt:</b> <code>"+fnnvtext.replace("<", "&lt;").replace(">", "&gt;")+"</code>", chat_id=update.message.chat.id, photo=open(link, 'rb'), parse_mode="HTML")
+            if hasvariab and ((update["message"]["photo"][-1]["height"] > 1000) or (update["message"]["photo"][-1]["width"] > 1000)):
+                buttons = [[InlineKeyboardButton(
+                    "Biến thể 😮", callback_data="1variable"+link[17:])]]
+            elif ((update["message"]["photo"][-1]["height"] > 1000) or (update["message"]["photo"][-1]["width"] > 1000)) and (hasvariab == False):
+                context.bot.sendMessage(
+                    chat_id=update.message.chat.id, text="Ảnhhh nì có kích thước lớn quá, tớ hok chịu nỗi, chức năng này chỉ hoạt động với ảnh dưới 1000px thui nha cậu 🥹\nNíu cậu mún lấy biến thể của ảnh nì thì nhớ thêm prompt render nhaaa 🤭")
+            elif ((update["message"]["photo"][-1]["height"] < 1000) and (update["message"]["photo"][-1]["width"] < 1000)) and (hasvariab == False):
+                buttons = [[InlineKeyboardButton(
+                            "Upscale 🤤", callback_data="upscale"+link[17:])]]
+            else:
+                buttons = [[InlineKeyboardButton("Biến thể 😮", callback_data="1variable"+link[17:]), InlineKeyboardButton(
+                            "Upscale 🤤", callback_data="upscale"+link[17:])]]
+            if buttons != None:
+                with open(link, "wb") as f:
+                    f.write(response.content)
+                context.bot.send_chat_action(
+                    chat_id=user_id_list[0], action=ChatAction.UPLOAD_PHOTO)
+                context.bot.send_photo(reply_markup=InlineKeyboardMarkup(
+                    buttons), caption="<b>Cậu hãy bỏ qua tin nhắn này nếu không muốn tạo ảnh 🥺</b>\n<b>Prompt:</b> <code>" +
+                    fntext.replace("<", "&lt;").replace(">", "&gt;")+"</code>\n\n"+"<b>Negative prompt:</b> <code>"+fnnvtext.replace("<", "&lt;").replace(">", "&gt;")+"</code>", chat_id=update.message.chat.id, photo=open(link, 'rb'), parse_mode="HTML")
 
         else:
             context.bot.sendMessage(chat_id=update.message.chat.id, text="Cậu đang đứng thứ <b>" + str(user_id_list.index(update.message.chat_id) + 1) +
