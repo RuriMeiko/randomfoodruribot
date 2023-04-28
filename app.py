@@ -362,12 +362,11 @@ def getinfovps_command(update, context):
     # cpu
 
     context.bot.sendMessage(chat_id=update.message.chat.id,
-                            text="Thời gian từ lần cuối khởi động" + str(psutil.boot_time())+' s')
-
+                            text="Thời gian từ lần cuối khởi động: " + str(psutil.boot_time())+' s')
     # ram
     inf_ram = psutil.virtual_memory()
     context.bot.sendMessage(chat_id=update.message.chat.id,
-                            text='RAM đã dùng: '+str(inf_ram[3])+' GB/'+str(inf_ram[0])+' GB')
+                            text='RAM đã dùng: '+str(round(inf_ram[3] / (1024 ** 3),1))+' GB/'+str(round(inf_ram[0] / (1024 ** 3),1))+' GB')
     # disk
     s = str(psutil.disk_usage('/'))
     context.bot.sendMessage(chat_id=update.message.chat.id,
