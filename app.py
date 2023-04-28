@@ -6,7 +6,7 @@ from pydub import AudioSegment
 import time
 from telegram.ext import *
 from telegram import *
-from datetime import date, datetime,timedelta
+from datetime import date, datetime, timedelta
 import credentials
 import tiktoken
 import random
@@ -359,7 +359,7 @@ def getinfovps_command(update, context):
     text = str(update.message.text).lower()
     print(
         f'LOG | TELEGARM: User ({update.message.chat.username}) says: "{text}" in: {message_type}')
-    # up time 
+    # up time
     boot_time_timestamp = psutil.boot_time()
     boot_time = datetime.fromtimestamp(boot_time_timestamp)
     now = datetime.now()
@@ -371,7 +371,7 @@ def getinfovps_command(update, context):
     # ram
     inf_ram = psutil.virtual_memory()
     context.bot.sendMessage(chat_id=update.message.chat.id,
-                            text='RAM đã dùng: '+str(round(inf_ram[3] / (1024 ** 3),1))+' GB/'+str(round(inf_ram[0] / (1024 ** 3),1))+' GB')
+                            text='RAM đã dùng: '+str(round(inf_ram[3] / (1024 ** 3), 1))+' GB/'+str(round(inf_ram[0] / (1024 ** 3), 1))+' GB')
     # disk
     s = str(psutil.disk_usage('/'))
     context.bot.sendMessage(chat_id=update.message.chat.id,
@@ -1607,6 +1607,8 @@ def bard_command(update, context):
         bard_bot.choice_id = history_chat['choice_id']
         re_bard = bard_bot.ask(text)
         buttons = []
+        context_bot.bot.send_chat_action(
+            chat_id=update.message.chat.id, action=ChatAction.TYPING)
         if 'last_mess_id' in history_chat:
             try:
                 context.bot.editMessageText(message_id=str(history_chat['last_mess_id']), chat_id=update.message.chat.id, text=a_cat_lying_on_the_sand.escape(
