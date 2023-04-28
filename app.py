@@ -115,10 +115,11 @@ def startup():
     context_bot.bot.sendMessage(chat_id=-845506997, text="Chào buổi sáng 🥺")
     context_bot.bot.send_sticker(
         chat_id=-845506997, sticker='CAACAgIAAxkBAAEfc7hkMcC6tstuPZ1C2c1Y2-3aDVP-OAACQUAAAuCjggcLgWEAAaSDFpMvBA')
-    s= get_public_ip_address()
+    s = get_public_ip_address()
     context_bot.bot.sendMessage(chat_id=-845506997, text="url connect ssh máy chủ 1810 là: "+s+"\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh team1810@" +
                                 s+"</code>\nPass: <span class='tg-spoiler'>18102003</span>", parse_mode="HTML")
-    context_bot.bot.sendMessage(chat_id=-845506997, text="NoMachine host: <code>" +s+"</code>\nPort là  <code>4000</code>", parse_mode="HTML")
+    context_bot.bot.sendMessage(chat_id=-845506997, text="NoMachine host: <code>" +
+                                s+"</code>\nPort là  <code>4000</code>", parse_mode="HTML")
     if a_cat_lying_on_the_sand.start() == False:
         print("LOG | SYSTEM: Lỗi! Link GPU không thể kết nối!!! 🤖🤖🤖")
         context_bot.bot.sendMessage(
@@ -359,21 +360,30 @@ def getinfovps_command(update, context):
     print(
         f'LOG | TELEGARM: User ({update.message.chat.username}) says: "{text}" in: {message_type}')
     # cpu
+
     context.bot.sendMessage(chat_id=update.message.chat.id,
-                            text="Số lượng lỗi CPU: " + str(psutil.cpu_count()))
-    context.bot.sendMessage(chat_id=update.message.chat.id,
-                            text='CPU đã dùng: '+str(psutil.cpu_percent(4)) + '%')
+                            text="Thời gian từ lần cuối khởi động" + str(psutil.boot_time())+' s')
+
     # ram
+    inf_ram = psutil.virtual_memory()
     context.bot.sendMessage(chat_id=update.message.chat.id,
-                            text='RAM đã dùng: '+str(psutil.virtual_memory()[2])+'%')
-    context.bot.sendMessage(chat_id=update.message.chat.id,
-                            text='RAM đã dùng: '+str(psutil.virtual_memory()[3]/1000000000)+' GB')
+                            text='RAM đã dùng: '+str(inf_ram[3])+' GB/'+str(inf_ram[0])+' GB')
     # disk
     s = str(psutil.disk_usage('/'))
     context.bot.sendMessage(chat_id=update.message.chat.id,
                             text="Ổ đĩa đã dùng: "+s[s.find('percent')+8:len(s)-1]+'%')
-    context.bot.sendMessage(chat_id=update.message.chat.id, text="Nhiệt độ cpu: \n" +
-                            str((psutil.sensors_temperatures()['coretemp'])))
+    temp_string = ''
+    temperatures = psutil.sensors_temperatures()['coretemp']
+    for temp in temperatures:
+        temp_string += temp.label + ': ' + str(temp.current) + ' độ C\n'
+
+    context.bot.sendMessage(chat_id=update.message.chat.id,
+                            text="Nhiệt độ cpu: \n" + temp_string)
+
+    context.bot.sendMessage(chat_id=update.message.chat.id,
+                            text="Số lượng lỗi CPU: " + str(psutil.cpu_count()))
+    context.bot.sendMessage(chat_id=update.message.chat.id,
+                            text='CPU đã dùng: '+str(psutil.cpu_percent(4)) + '%')
 
 
 def generate_guid():
@@ -588,12 +598,12 @@ def handle_message(update, context):
 def get_control_command(update, context):
     buttons = [[InlineKeyboardButton(
         "Click đây để nhắn cho master của tớ 🥺", url="https://t.me/rurimeiko")]]
-    s= get_public_ip_address()
-    context_bot.bot.sendMessage(reply_markup=InlineKeyboardMarkup(buttons),chat_id=update.message.chat.id, text="url connect ssh máy chủ 1810 là: "+s+"\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh team1810@" +
+    s = get_public_ip_address()
+    context_bot.bot.sendMessage(reply_markup=InlineKeyboardMarkup(buttons), chat_id=update.message.chat.id, text="url connect ssh máy chủ 1810 là: "+s+"\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh team1810@" +
                                 s+"</code>\nPass: nhấp vào nút bên dưới để hỏi pass 🥹", parse_mode="HTML")
-    context_bot.bot.sendMessage(chat_id=update.message.chat.id, text="NoMachine host: <code>" +s+"</code>\nPort là  <code>4000</code>", parse_mode="HTML")
+    context_bot.bot.sendMessage(chat_id=update.message.chat.id, text="NoMachine host: <code>" +
+                                s+"</code>\nPort là  <code>4000</code>", parse_mode="HTML")
 
-   
 
 spamcout = 0
 
