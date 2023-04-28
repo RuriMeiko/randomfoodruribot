@@ -6,7 +6,7 @@ from pydub import AudioSegment
 import time
 from telegram.ext import *
 from telegram import *
-from datetime import date, datetime
+from datetime import date, datetime,timedelta
 import credentials
 import tiktoken
 import random
@@ -359,10 +359,15 @@ def getinfovps_command(update, context):
     text = str(update.message.text).lower()
     print(
         f'LOG | TELEGARM: User ({update.message.chat.username}) says: "{text}" in: {message_type}')
-    # cpu
+    # up time 
+    boot_time_timestamp = psutil.boot_time()
+    boot_time = datetime.fromtimestamp(boot_time_timestamp)
+    now = datetime.now()
+    uptime = now - boot_time
+    uptime_str = str(timedelta(seconds=uptime.total_seconds())).split(".")[0]
 
     context.bot.sendMessage(chat_id=update.message.chat.id,
-                            text="Thời gian từ lần cuối khởi động: " + str(psutil.boot_time())+' s')
+                            text="Thời gian hoạt động kể từ lần cuối khởi động: " + uptime_str)
     # ram
     inf_ram = psutil.virtual_memory()
     context.bot.sendMessage(chat_id=update.message.chat.id,
@@ -371,18 +376,17 @@ def getinfovps_command(update, context):
     s = str(psutil.disk_usage('/'))
     context.bot.sendMessage(chat_id=update.message.chat.id,
                             text="Ổ đĩa đã dùng: "+s[s.find('percent')+8:len(s)-1]+'%')
-    temp_string = ''
-    temperatures = psutil.sensors_temperatures()['coretemp']
-    for temp in temperatures:
-        temp_string += temp.label + ': ' + str(temp.current) + ' độ C\n'
-
-    context.bot.sendMessage(chat_id=update.message.chat.id,
-                            text="Nhiệt độ cpu: \n" + temp_string)
 
     context.bot.sendMessage(chat_id=update.message.chat.id,
                             text="Số lượng lỗi CPU: " + str(psutil.cpu_count()))
     context.bot.sendMessage(chat_id=update.message.chat.id,
                             text='CPU đã dùng: '+str(psutil.cpu_percent(4)) + '%')
+    temp_string = ''
+    temperatures = psutil.sensors_temperatures()['coretemp']
+    for temp in temperatures:
+        temp_string += temp.label + ': ' + str(temp.current) + ' độ C\n'
+    context.bot.sendMessage(chat_id=update.message.chat.id,
+                            text="Nhiệt độ cpu: \n" + temp_string)
 
 
 def generate_guid():
