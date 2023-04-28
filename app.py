@@ -70,25 +70,20 @@ tran_en_jp = Translator(provider='mymemory',
                         email='chandoralong@gmail.com')
 
 
-def get_ngrok_urls():
+def get_public_ip_address():
+    """
+    Returns the public IP address of the current machine
+    """
     try:
-        url = "http://localhost:4040/api/tunnels"
-        res = requests.get(url)
-        res_unicode = res.content.decode("utf-8")
-        res_json = json.loads(res_unicode)
-        tunnels = res_json["tunnels"]
-        # Lọc các kết nối ngrok để tìm URL của cổng 22 và cổng 4000
-        tunnel_22 = next((t for t in tunnels if t["config"]["addr"].endswith(":22")), None)
-        tunnel_4000 = next((t for t in tunnels if t["config"]["addr"].endswith(":4000")), None)
-        # Lưu trữ URL của cổng 22 và cổng 4000 vào danh sách kết quả trả về
-        urls = []
-        if tunnel_22 is not None:
-            urls.append(tunnel_22["public_url"])
-        if tunnel_4000 is not None:
-            urls.append(tunnel_4000["public_url"])
-        return urls
-    except:
-        return ['','']
+        # Send a GET request to the IP address API
+        response = requests.get("https://api.ipify.org")
+
+        # Extract the IP address from the response text
+        ip_address = response.text
+    except Exception as e:
+        print("LOG | SYSTEM: Error getting public IP address:", e)
+        ip_address = 'None'
+    return ip_address
 
 
 def startup():
@@ -97,7 +92,7 @@ def startup():
     global listidtkb
     global stoptkb
     global motaJson
-    print("LOG | LOG | SYSTEM: Loading list food...")
+    print("LOG | SYSTEM: Loading list food...")
     f = open("food.txt", "r", encoding="utf-8")
     listfood = f.read().split("\n")
     f.close()
@@ -120,12 +115,10 @@ def startup():
     context_bot.bot.sendMessage(chat_id=-845506997, text="Chào buổi sáng 🥺")
     context_bot.bot.send_sticker(
         chat_id=-845506997, sticker='CAACAgIAAxkBAAEfc7hkMcC6tstuPZ1C2c1Y2-3aDVP-OAACQUAAAuCjggcLgWEAAaSDFpMvBA')
-    urls = get_ngrok_urls()
-    s= urls[0]
-    context_bot.bot.sendMessage(chat_id=-845506997, text="url connect ssh máy chủ 1810 là: "+s + "\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh team1810@" +
-                                s[6:23]+" -p "+s[24:]+"</code>\nPass: <span class='tg-spoiler'>18102003</span>", parse_mode="HTML")
-    s = urls[1]
-    context_bot.bot.sendMessage(chat_id=-845506997, text="NoMachine host: <code>" +s[6:23]+"</code>\nPort là  <code>"+s[24:]+"</code>", parse_mode="HTML")
+    s= get_public_ip_address()
+    context_bot.bot.sendMessage(chat_id=-845506997, text="url connect ssh máy chủ 1810 là: "+s+"\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh team1810@" +
+                                s+"</code>\nPass: <span class='tg-spoiler'>18102003</span>", parse_mode="HTML")
+    context_bot.bot.sendMessage(chat_id=-845506997, text="NoMachine host: <code>" +s+"</code>\nPort là  <code>4000</code>", parse_mode="HTML")
     if a_cat_lying_on_the_sand.start() == False:
         print("LOG | SYSTEM: Lỗi! Link GPU không thể kết nối!!! 🤖🤖🤖")
         context_bot.bot.sendMessage(
@@ -592,15 +585,15 @@ def handle_message(update, context):
     #     send_message_replika(post_text, str(Update_id))
 
 
-def getsshurl_command(update, context):
-    urls = get_ngrok_urls()
-    s= urls[0]
+def get_control_command(update, context):
     buttons = [[InlineKeyboardButton(
         "Click đây để nhắn cho master của tớ 🥺", url="https://t.me/rurimeiko")]]
-    context_bot.bot.sendMessage(chat_id=update.message.chat.id,reply_markup=InlineKeyboardMarkup(buttons), text="url connect ssh máy chủ 1810 là: "+s +
-                              "\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh team1810@"+s[6:23]+" -p "+s[24:]+"</code>\nPass: nhấp vào nút bên dưới để hỏi pass 🥹", parse_mode="HTML")
-    s = urls[1]
-    context_bot.bot.sendMessage(chat_id=update.message.chat.id, text="NoMachine host: <code>" +s[6:23]+"</code>\nPort là  <code>"+s[24:]+"</code>", parse_mode="HTML")
+    s= get_public_ip_address()
+    context_bot.bot.sendMessage(reply_markup=InlineKeyboardMarkup(buttons),chat_id=update.message.chat.id, text="url connect ssh máy chủ 1810 là: "+s+"\nCách connect trên windows là mở terminal\nGõ lệnh <code>ssh team1810@" +
+                                s+"</code>\nPass: nhấp vào nút bên dưới để hỏi pass 🥹", parse_mode="HTML")
+    context_bot.bot.sendMessage(chat_id=update.message.chat.id, text="NoMachine host: <code>" +s+"</code>\nPort là  <code>4000</code>", parse_mode="HTML")
+
+   
 
 spamcout = 0
 
@@ -1669,7 +1662,7 @@ def runbot():
     dp.add_handler(CommandHandler('showfood', showfood_command))
     dp.add_handler(CommandHandler('showsoup', showsoup_command))
     dp.add_handler(CommandHandler('getinfovps', getinfovps_command))
-    dp.add_handler(CommandHandler('getsshurl', getsshurl_command))
+    dp.add_handler(CommandHandler('getcontrol', get_control_command))
     dp.add_handler(CommandHandler('spamsticker', spamsticker))
     dp.add_handler(CommandHandler('replika', handle_message))
     dp.add_handler(CommandHandler('tkb', tkb_command))
