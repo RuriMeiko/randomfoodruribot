@@ -578,7 +578,7 @@ def handle_message(update, context):
                 "Nhắn `/replika + nội dung tin nhắn` hoặc tag em vào và gửi voice nha\nHiện *tin nhắn* hỗ trợ ngôn ngữ chính là tiếng anh, ngôn ngữ phụ là tiếng việt được dịch bằng google dịch\.", parse_mode="MarkdownV2")
         return
     # Replace with your bot username
-    text.replace('/replika', '').replace('@randomfoodruribot',
+    text = text.replace('/replika', '').replace('@randomfoodruribot',
                                          '').replace('/replika@randomfoodruribot', '').strip()
     print(
         f'LOG | TELEGARM: User ({update.message.chat.username}) says: "{text}" in: {message_type}')
